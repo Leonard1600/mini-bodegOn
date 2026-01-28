@@ -1,10 +1,22 @@
-import ExchangeRate from "../models/ExchangeRate.js";
+import ExchangeRate from "../models/exchangeRate.js";
 
-export const getLatestRate = async (req, res) => {
+export const getCurrentRate = async (req, res) => {
   try {
-    const rate = await ExchangeRate.findOne().sort({ date: -1 });
+    const rate = await ExchangeRate.findOne().sort({ createdAt: -1 });
+
+    if (!rate) {
+      return res.status(404).json({
+        message: "No exchange rate found",
+      });
+    }
+
     res.json(rate);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching exchange rate" });
+    res.status(500).json({
+      message: "Error fetching exchange rate",
+      error: error.message,
+    });
   }
 };
+
+

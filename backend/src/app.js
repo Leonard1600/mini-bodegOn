@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
 
-import categoryRoutes from "./routes/category.routes.js";
-import productRoutes from "./routes/product.routes.js";
-import exchangeRateRoutes from "./routes/exchangeRate.routes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
+import exchangeRateRoutes from "./routes/exchangeRateRoutes.js";
 
 const app = express();
 

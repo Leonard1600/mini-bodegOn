@@ -1,4 +1,3 @@
-// backend/src/models/ExchangeRate.js
 import mongoose from "mongoose";
 
 const exchangeRateSchema = new mongoose.Schema(
@@ -10,11 +9,6 @@ const exchangeRateSchema = new mongoose.Schema(
     },
     rate: {
       type: Number,
-      required: true,
-      min: 0,
-    },
-    date: {
-      type: Date,
       required: true,
     },
   },
