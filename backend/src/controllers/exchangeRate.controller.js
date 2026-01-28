@@ -6,11 +6,11 @@ export const getCurrentRate = async (req, res) => {
 
     if (!rate) {
       return res.status(404).json({
-        message: "No exchange rate found",
+        message: "No exchange rate available",
       });
     }
 
-    res.json(rate);
+    res.status(200).json(rate);
   } catch (error) {
     res.status(500).json({
       message: "Error fetching exchange rate",
