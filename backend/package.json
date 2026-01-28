@@ -2,8 +2,19 @@
   "name": "mini-bodegon-backend",
   "version": "1.0.0",
   "type": "module",
+  "private": true,
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongoose": "^8.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
+
