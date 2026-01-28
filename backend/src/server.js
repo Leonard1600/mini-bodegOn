@@ -1,25 +1,13 @@
-import express from "express";
 import dotenv from "dotenv";
-import cors from "cors";
 import connectDB from "./config/db.js";
+import app from "./app.js";
 
 dotenv.config();
-
-const app = express();
-
-// Middlewares
-app.use(cors());
-app.use(express.json());
-
-// Test route (OBLIGATORIA para debug)
-app.get("/", (req, res) => {
-  res.send("Mini bodegOn API running");
-});
 
 // DB
 connectDB();
 
-// PORT OBLIGATORIO PARA RENDER
+// PORT obligatorio para Render
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
