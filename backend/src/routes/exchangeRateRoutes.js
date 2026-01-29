@@ -1,9 +1,15 @@
 import express from "express";
-import { getCurrentRate } from "../controllers/exchangeRate.controller.js";
+import {
+  getActiveRate,
+  setManualRate,
+} from "../controllers/exchangeRate.controller.js";
 
 const router = express.Router();
 
-router.get("/", getCurrentRate);
+// Obtener tasa activa (manual o BCV)
+router.get("/exchange-rate/active", getActiveRate);
+
+// Definir tasa manual
+router.post("/exchange-rate/manual", setManualRate);
 
 export default router;
-
