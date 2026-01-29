@@ -1,55 +1,77 @@
 import ExchangeRate from "../models/exchangeRate.js";
 
-// Obtener la tasa activa (manual tiene prioridad, si no BCV)
+/**
+ * Obtener la tasa activa
+ * - Si existe una tasa MANUAL activa, se usa esa
+ * - Siempre se obtiene la tasa BCV más reciente como referencia
+ */
 export const getActiveRate = async (req, res) => {
   try {
+    // 1️⃣ Buscar tasa manual activa (prioritaria)
     const manualRate = await ExchangeRate.findOne({
       source: "MANUAL",
       active: true,
     }).sort({ createdAt: -1 });
 
-    if (manualRate) {
-      return res.json(manualRate);
-    }
-
+    // 2️⃣ Buscar siempre la tasa BCV más reciente (referencia)
     const bcvRate = await ExchangeRate.findOne({
       source: "BCV",
     }).sort({ date: -1 });
 
-    if (!bcvRate) {
-      return res.status(404).json({ message: "No hay tasa disponible" });
+    if (!manualRate && !bcvRate) {
+      return res.status(404).json({
+        message: "No hay tasa disponible",
+      });
     }
 
-    res.json(bcvRate);
+    return res.status(200).json({
+      appliedRate: manualRate || bcvRate, // tasa usada para cálculos
+      manualRate: manualRate || null,     // puede ser null
+      bcvRate: bcvRate || null,            // referencia oficial
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error al obtener la tasa activa" });
+    console.error("Error getActiveRate:", error);
+    return res.status(500).json({
+      message: "Error al obtener la tasa activa",
+    });
   }
 };
 
-// Definir tasa manual
+/**
+ * Definir una tasa manual
+ * - Desactiva cualquier tasa MANUAL previa
+ * - Guarda la nueva como activa
+ */
 export const setManualRate = async (req, res) => {
   try {
     const { rate } = req.body;
 
-    if (!rate) {
-      return res.status(400).json({ message: "La tasa es obligatoria" });
+    // 1️⃣ Validación estricta
+    if (rate === undefined || isNaN(rate) || Number(rate) <= 0) {
+      return res.status(400).json({
+        message: "La tasa debe ser un número mayor a 0",
+      });
     }
 
+    // 2️⃣ Desactivar tasas manuales anteriores
     await ExchangeRate.updateMany(
-      { source: "MANUAL" },
+      { source: "MANUAL", active: true },
       { active: false }
     );
 
+    // 3️⃣ Crear nueva tasa manual activa
     const manualRate = await ExchangeRate.create({
       source: "MANUAL",
-      rate,
+      rate: Number(rate),
       active: true,
+      date: new Date(),
     });
 
-    res.status(201).json(manualRate);
+    return res.status(201).json(manualRate);
   } catch (error) {
-    res.status(500).json({ message: "Error al guardar la tasa manual" });
+    console.error("Error setManualRate:", error);
+    return res.status(500).json({
+      message: "Error al guardar la tasa manual",
+    });
   }
 };
-
-
