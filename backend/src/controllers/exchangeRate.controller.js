@@ -75,3 +75,26 @@ export const setManualRate = async (req, res) => {
     });
   }
 };
+/**
+ * Obtener la tasa BCV más reciente (referencia)
+ */
+export const getBCVRate = async (req, res) => {
+  try {
+    const bcvRate = await ExchangeRate.findOne({
+      source: "BCV",
+    }).sort({ date: -1 });
+
+    if (!bcvRate) {
+      return res.status(404).json({
+        message: "No hay tasa BCV disponible",
+      });
+    }
+
+    return res.status(200).json(bcvRate);
+  } catch (error) {
+    console.error("Error getBCVRate:", error);
+    return res.status(500).json({
+      message: "Error al obtener la tasa BCV",
+    });
+  }
+};
