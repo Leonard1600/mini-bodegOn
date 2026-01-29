@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
-app.use("/api/exchange-rate", exchangeRateRoutes);
+app.use("/api", exchangeRateRoutes);
 
 export default app;
 
