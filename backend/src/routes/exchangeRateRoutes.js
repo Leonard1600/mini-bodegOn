@@ -7,9 +7,10 @@ import {
 const router = express.Router();
 
 // Obtener tasa activa (manual o BCV)
-router.get("/exchange-rate/active", getActiveRate);
+router.get("/active", getActiveRate);
 
 // Definir tasa manual
-router.post("/exchange-rate/manual", setManualRate);
+router.post("/manual", setManualRate);
 
 export default router;
+
