@@ -2,14 +2,22 @@ import api from "./api";
 
 /**
  * Obtiene la tasa activa desde el backend.
- * Prioridad definida en backend:
- * 1) MANUAL activa
- * 2) BCV activa
+ * Devuelve un objeto normalizado para el frontend:
+ * {
+ *   appliedRate,
+ *   bcvRate
+ * }
  */
 export const getActiveExchangeRate = async () => {
   try {
     const response = await api.get("/exchange-rate/active");
-    return response.data;
+
+    const { appliedRate, bcvRate } = response.data;
+
+    return {
+      appliedRate,
+      bcvRate,
+    };
   } catch (error) {
     console.error("Error obteniendo tasa activa:", error);
     throw error;
@@ -31,3 +39,4 @@ export const setManualExchangeRate = async (rate) => {
     throw error;
   }
 };
+
