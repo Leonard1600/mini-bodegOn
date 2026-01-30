@@ -46,6 +46,11 @@ const categorias = [
     productos: 0,
     imagen: "/repuestos%20de%20moto.png",
   },
+  {
+    nombre: "Helados Cali",
+    productos: 0,
+    imagen: "/helados%20cali.png",
+  },
 ];
 
 function App() {
@@ -96,16 +101,10 @@ function App() {
           {categorias.map((cat) => (
             <div
               key={cat.nombre}
-              style={
-                cat.imagen
-                  ? {
-                      backgroundImage: `linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), url(${cat.imagen})`,
-                    }
-                  : {}
-              }
-              className={`h-48 rounded-2xl shadow-lg flex flex-col items-center justify-center text-center text-white ${
-                cat.imagen ? "bg-cover bg-center" : "bg-gray-400"
-              }`}
+              style={{
+                backgroundImage: `linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), url(${cat.imagen})`,
+              }}
+              className="h-48 rounded-2xl shadow-lg flex flex-col items-center justify-center text-center text-white bg-cover bg-center"
             >
               <h2 className="text-2xl font-bold mb-1">{cat.nombre}</h2>
               <p className="text-sm mb-3">

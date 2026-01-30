@@ -77,6 +77,11 @@ export const catalogByCategory = [
     name: "Repuestos de moto",
     products: [],
   },
+  {
+    id: "helados-cali",
+    name: "Helados Cali",
+    products: [],
+  },
 ];
 
 // Catálogo plano (compatibilidad futura)
