@@ -1,56 +1,33 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const User = require('./models/User'); // Importamos el modelo de usuario
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import User from './models/User'; // Importamos el modelo de usuario
 
-// Función para iniciar sesión
-const login = async (req, res) => {
-  const { email, password } = req.body; // Obtenemos los datos del login
+// Middleware para verificar si el usuario es admin y tiene la contraseña secreta correcta
+const isAdminWithPassword = (req, res, next) => {
+  const { token, password } = req.body; // Obtenemos el token y la contraseña
 
-  try {
-    // Buscamos al usuario por el correo electrónico
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ msg: "Usuario no encontrado" });
-    }
-
-    // Comparamos la contraseña ingresada con la almacenada
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ msg: "Contraseña incorrecta" });
-    }
-
-    // Si el usuario y la contraseña son correctos, generamos el JWT
-    const payload = { userId: user._id, role: user.role };
-    const token = jwt.sign(payload, 'secreto', { expiresIn: '1h' }); // El token expira en 1 hora
-
-    res.json({ token }); // Enviamos el token al cliente
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ msg: "Error en el servidor" });
-  }
-};
-
-// Middleware para verificar si el usuario tiene rol de admin
-const isAdmin = (req, res, next) => {
-  const token = req.header('x-auth-token'); // Obtenemos el token del encabezado
-
-  if (!token) {
-    return res.status(401).json({ msg: 'No autorizado' });
+  if (!token || !password) {
+    return res.status(400).json({ msg: 'Token y contraseña requeridos' });
   }
 
   try {
-    // Verificamos el token
-    const decoded = jwt.verify(token, 'secreto'); // Verificamos el token con la clave secreta
+    const decoded = jwt.verify(token, 'secreto'); // Verificamos el token
 
     if (decoded.role !== 'admin') {
       return res.status(403).json({ msg: 'Acceso denegado, se requiere rol de admin' });
     }
 
-    // Si el usuario es admin, continuamos con la siguiente función (next)
-    next();
+    // Verificamos la contraseña secreta para el admin (esto es una simple comparación de contraseñas)
+    const adminPassword = process.env.ADMIN_PASSWORD || 'supersecreto'; // Contraseña secreta para el admin
+    if (password !== adminPassword) {
+      return res.status(403).json({ msg: 'Contraseña incorrecta' });
+    }
+
+    next(); // Si todo está bien, continuamos al siguiente middleware o ruta
   } catch (error) {
     return res.status(401).json({ msg: 'Token inválido' });
   }
 };
 
-module.exports = { login, isAdmin };
+export { isAdminWithPassword };
+
