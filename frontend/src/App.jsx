@@ -1,77 +1,30 @@
-import React, { useState } from "react";
-
-const categorias = [
-  {
-    nombre: "Víveres",
-    productos: 4,
-    imagen: "/viveres.jpg",
-  },
-  {
-    nombre: "Bebidas",
-    productos: 1,
-    imagen: "/bebidas.png",
-  },
-  {
-    nombre: "Detergentes",
-    productos: 0,
-    imagen: "/detergentes.png",
-  },
-  {
-    nombre: "Charcutería",
-    productos: 0,
-    imagen: "/charcuteria.png",
-  },
-  {
-    nombre: "Confitería",
-    productos: 0,
-    imagen: "/confiteria.png",
-  },
-  {
-    nombre: "Papelería",
-    productos: 0,
-    imagen: "/papeleria.png",
-  },
-  {
-    nombre: "Productos de higiene",
-    productos: 0,
-    imagen: "/productos%20de%20higiene.png",
-  },
-  {
-    nombre: "Productos varios",
-    productos: 0,
-    imagen: "/productos%20varios.png",
-  },
-  {
-    nombre: "Repuestos de moto",
-    productos: 0,
-    imagen: "/repuestos%20de%20moto.png",
-  },
-  {
-    nombre: "Helados Cali",
-    productos: 0,
-    imagen: "/helados%20cali.png",
-  },
-];
+ import React, { useState } from "react";
+import Catalog from "./components/Catalog";
+import { catalogByCategory } from "./data/catalog";
 
 function App() {
   const [categoriaActiva, setCategoriaActiva] = useState(null);
-  const [carrito] = useState([]);
+  const [carrito, setCarrito] = useState([]);
+
+  const appliedRate = 38.5;
 
   const comprarPorWhatsApp = () => {
     const mensaje =
       "Hola, quiero hacer un pedido en Mini bodegOn. Quisiera información.";
-    const url = `https://wa.me/584142316762?text=${encodeURIComponent(
-      mensaje
-    )}`;
+    const url = `https://wa.me/584142316762?text=${encodeURIComponent(mensaje)}`;
     window.open(url, "_blank");
+  };
+
+  const addToCart = (product) => {
+    setCarrito((prev) => [...prev, product]);
   };
 
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-6 relative">
       {/* TASAS */}
       <div className="absolute top-4 right-4 text-right text-xs text-gray-700 space-y-1 bg-white p-3 rounded-xl shadow">
-        <p><strong>Tasa usada:</strong> 38.5 Bs/USD</p>
-        <p><strong>Tasa BCV:</strong> 38.5 Bs/USD</p>
+        <p><strong>Tasa usada:</strong> {appliedRate} Bs/USD</p>
+        <p><strong>Tasa BCV:</strong> {appliedRate} Bs/USD</p>
         <p><strong>Fecha:</strong> 27/01/2026</p>
       </div>
 
@@ -98,20 +51,18 @@ function App() {
       {/* CATEGORÍAS */}
       {!categoriaActiva && (
         <section className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {categorias.map((cat) => (
+          {catalogByCategory.map((cat) => (
             <div
-              key={cat.nombre}
+              key={cat.id}
               style={{
-                backgroundImage: `linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), url(${cat.imagen})`,
+                backgroundImage: `linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url("${cat.image}")`,
               }}
               className="h-48 rounded-2xl shadow-lg flex flex-col items-center justify-center text-center text-white bg-cover bg-center"
             >
-              <h2 className="text-2xl font-bold mb-1">{cat.nombre}</h2>
+              <h2 className="text-2xl font-bold mb-1">{cat.name}</h2>
               <p className="text-sm mb-3">
-                {cat.productos}{" "}
-                {cat.productos === 1
-                  ? "producto disponible"
-                  : "productos disponibles"}
+                {cat.products.length}{" "}
+                {cat.products.length === 1 ? "producto" : "productos"}
               </p>
               <button
                 onClick={() => setCategoriaActiva(cat)}
@@ -124,9 +75,9 @@ function App() {
         </section>
       )}
 
-      {/* VISTA PRODUCTOS */}
+      {/* PRODUCTOS */}
       {categoriaActiva && (
-        <section className="max-w-4xl mx-auto">
+        <section className="max-w-6xl mx-auto">
           <button
             onClick={() => setCategoriaActiva(null)}
             className="mb-4 text-sm text-emerald-600 font-semibold"
@@ -134,13 +85,11 @@ function App() {
             ← Volver a categorías
           </button>
 
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">
-            Productos de {categoriaActiva.nombre}
-          </h2>
-
-          <p className="text-gray-600">
-            Los productos de esta categoría estarán disponibles próximamente.
-          </p>
+          <Catalog
+            category={categoriaActiva}
+            appliedRate={appliedRate}
+            addToCart={addToCart}
+          />
         </section>
       )}
     </div>
@@ -148,3 +97,5 @@ function App() {
 }
 
 export default App;
+
+ 
