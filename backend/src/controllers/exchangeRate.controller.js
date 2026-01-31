@@ -3,17 +3,17 @@ import ExchangeRate from "../models/exchangeRate.js";
 /**
  * Obtener la tasa activa
  * - Si existe una tasa MANUAL activa, se usa esa
- * - Siempre se obtiene la tasa BCV más reciente como referencia
+ * - Si no, se usa la tasa BCV más reciente
  */
 export const getActiveRate = async (req, res) => {
   try {
-    // 1️⃣ Buscar tasa manual activa (prioritaria)
+    // 1️⃣ Buscar tasa MANUAL activa (prioridad absoluta)
     const manualRate = await ExchangeRate.findOne({
       source: "MANUAL",
       active: true,
     }).sort({ createdAt: -1 });
 
-    // 2️⃣ Buscar siempre la tasa BCV más reciente (referencia)
+    // 2️⃣ Buscar tasa BCV más reciente (SOLO referencia)
     const bcvRate = await ExchangeRate.findOne({
       source: "BCV",
     }).sort({ date: -1 });
@@ -25,9 +25,9 @@ export const getActiveRate = async (req, res) => {
     }
 
     return res.status(200).json({
-      appliedRate: manualRate || bcvRate, // tasa usada para cálculos
-      manualRate: manualRate || null,     // puede ser null
-      bcvRate: bcvRate || null,            // referencia oficial
+      appliedRate: manualRate || bcvRate,
+      manualRate: manualRate || null,
+      bcvRate: bcvRate || null,
     });
   } catch (error) {
     console.error("Error getActiveRate:", error);
@@ -53,7 +53,7 @@ export const setManualRate = async (req, res) => {
       });
     }
 
-    // 2️⃣ Desactivar tasas manuales anteriores
+    // 2️⃣ Desactivar tasas MANUALES anteriores
     await ExchangeRate.updateMany(
       { source: "MANUAL", active: true },
       { active: false }
@@ -67,7 +67,10 @@ export const setManualRate = async (req, res) => {
       date: new Date(),
     });
 
-    return res.status(201).json(manualRate);
+    return res.status(201).json({
+      message: "Tasa manual actualizada con éxito",
+      manualRate,
+    });
   } catch (error) {
     console.error("Error setManualRate:", error);
     return res.status(500).json({
@@ -75,6 +78,7 @@ export const setManualRate = async (req, res) => {
     });
   }
 };
+
 /**
  * Obtener la tasa BCV más reciente (referencia)
  */
@@ -98,3 +102,4 @@ export const getBCVRate = async (req, res) => {
     });
   }
 };
+
