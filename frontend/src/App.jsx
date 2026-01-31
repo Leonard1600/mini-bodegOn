@@ -92,10 +92,15 @@ function App() {
         </div>
       )}
 
-      <header className="text-center mb-6 mt-6">
-        <h1 className="text-4xl font-extrabold text-gray-800">
-          Mini <span className="text-emerald-600">bodegOn</span>
-        </h1>
+      {/* LOGO */}
+      <header className="flex justify-center mb-6 mt-6">
+        <div className="bg-white p-3 rounded-2xl shadow">
+          <img
+            src="/logo.png"
+            alt="Mini bodegOn"
+            className="h-16 sm:h-20 object-contain"
+          />
+        </div>
       </header>
 
       <div className="max-w-4xl mx-auto mb-6 bg-white rounded-xl shadow p-4 flex justify-between">
