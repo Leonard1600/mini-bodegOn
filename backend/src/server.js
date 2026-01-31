@@ -1,6 +1,5 @@
-// src/server.js
 import dotenv from "dotenv";
-dotenv.config(); // DEBE ir primero
+dotenv.config(); // SIEMPRE PRIMERO
 
 import express from "express";
 import mongoose from "mongoose";
@@ -9,44 +8,42 @@ import tasaRoutes from "./routes/tasaRoutes.js";
 
 const app = express();
 
-/**
- * ✅ CORS CONFIGURADO CORRECTAMENTE
- * - Permite frontend en Vercel
- * - Permite desarrollo local
- */
-app.use(
-  cors({
-    origin: [
-      "https://mini-bodeg-on.vercel.app",
-      "http://localhost:5173",
-      "http://localhost:3000",
-    ],
-    methods: ["GET", "PUT"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+/* ======================
+   MIDDLEWARES
+====================== */
+app.use(cors({
+  origin: "*", // luego se puede limitar a Vercel
+}));
 
-// Middlewares
 app.use(express.json());
 
-// Rutas
+/* ======================
+   RUTAS
+====================== */
 app.use("/api/tasa", tasaRoutes);
 
-// Puerto
+// Health check para Render
+app.get("/salud", (req, res) => {
+  res.status(200).send("OK");
+});
+
+/* ======================
+   SERVER + DB
+====================== */
 const PORT = process.env.PORT || 4000;
 
-// Conexión a MongoDB y arranque del servidor
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("✅ MongoDB conectado");
     app.listen(PORT, () => {
-      console.log(`Servidor corriendo en el puerto ${PORT}`);
+      console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
     });
   })
   .catch((err) => {
-    console.error("❌ Error al conectar MongoDB:", err.message);
+    console.error("❌ Error MongoDB:", err.message);
     process.exit(1);
   });
+
 
 

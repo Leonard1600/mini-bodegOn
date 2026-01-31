@@ -1,5 +1,8 @@
 import express from "express";
-import { getTasa, updateTasa } from "../controllers/tasaController.js";
+import {
+  getTasa,
+  updateTasa,
+} from "../controllers/exchangeRate.controller.js";
 import auth from "../middleware/auth.js";
 
 const router = express.Router();
@@ -17,4 +20,3 @@ router.get("/", getTasa);
 router.put("/", auth, updateTasa);
 
 export default router;
-
