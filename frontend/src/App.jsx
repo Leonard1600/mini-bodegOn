@@ -3,16 +3,18 @@ import axios from "axios";
 import Catalog from "./components/Catalog";
 import { catalogByCategory } from "./data/catalog";
 
-/* ✅ AGREGADO: URL base segura para producción y local */
-const API_BASE =
-  import.meta.env.VITE_API_URL || "http://localhost:4000";
+/**
+ * ✅ URL REAL DEL BACKEND EN PRODUCCIÓN (Render)
+ */
+const API_BASE = "https://mini-bodegon-backend-leo.onrender.com";
 
 function App() {
   const [categoriaActiva, setCategoriaActiva] = useState(null);
   const [carrito, setCarrito] = useState([]);
-  const [appliedRate, setAppliedRate] = useState(38.5);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [appliedRate, setAppliedRate] = useState(null);
+  const [lastUpdate, setLastUpdate] = useState(null);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const comprarPorWhatsApp = () => {
     const mensaje =
@@ -25,35 +27,42 @@ function App() {
     setCarrito((prev) => [...prev, product]);
   };
 
-  // ✅ Obtener tasa
+  /**
+   * ✅ OBTENER TASA DESDE BACKEND
+   */
   const fetchTasa = async () => {
     try {
-      const response = await axios.get(`${API_BASE}/api/tasa`);
-      setAppliedRate(response.data.tasa);
+      const { data } = await axios.get(`${API_BASE}/api/tasa`);
+      setAppliedRate(data.tasa);
+      setLastUpdate(data.updatedAt);
+      setError("");
     } catch (err) {
-      console.error("Error al obtener la tasa: ", err);
+      console.error("Error al obtener la tasa:", err);
       setError("No se pudo obtener la tasa actual.");
     }
   };
 
-  // ✅ Actualizar tasa (solo admin)
-  const updateTasa = async (newRate) => {
+  /**
+   * ✅ ACTUALIZAR TASA (ADMIN)
+   */
+  const updateTasa = async () => {
     try {
-      const response = await axios.put(
+      const { data } = await axios.put(
         `${API_BASE}/api/tasa`,
-        { tasa: newRate },
+        { tasa: appliedRate },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
           },
         }
       );
-      setAppliedRate(response.data.tasa);
+      setAppliedRate(data.tasa);
+      setLastUpdate(data.updatedAt);
       setSuccess("Tasa actualizada correctamente.");
-      setError('');
+      setError("");
     } catch (err) {
-      setError("Error al actualizar la tasa. Asegúrate de que tienes permisos.");
-      setSuccess('');
+      setError("Error al actualizar la tasa. Verifica permisos.");
+      setSuccess("");
     }
   };
 
@@ -63,16 +72,25 @@ function App() {
 
   const isAdmin = localStorage.getItem("adminToken");
 
-  console.log("Admin Token:", isAdmin);
-
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-6 relative">
       {/* TASAS */}
-      <div className="absolute top-4 right-4 text-right text-xs text-gray-700 space-y-1 bg-white p-3 rounded-xl shadow">
-        <p><strong>Tasa usada:</strong> {appliedRate} Bs/USD</p>
-        <p><strong>Tasa BCV:</strong> {appliedRate} Bs/USD</p>
-        <p><strong>Fecha:</strong> 27/01/2026</p>
-      </div>
+      {appliedRate && (
+        <div className="absolute top-4 right-4 text-right text-xs text-gray-700 space-y-1 bg-white p-3 rounded-xl shadow">
+          <p>
+            <strong>Tasa usada:</strong> {appliedRate} Bs/USD
+          </p>
+          <p>
+            <strong>Tasa BCV:</strong> {appliedRate} Bs/USD
+          </p>
+          <p>
+            <strong>Fecha:</strong>{" "}
+            {lastUpdate
+              ? new Date(lastUpdate).toLocaleDateString("es-VE")
+              : "—"}
+          </p>
+        </div>
+      )}
 
       {/* HEADER */}
       <header className="text-center mb-6 mt-6">
@@ -142,11 +160,13 @@ function App() {
       {/* ADMIN */}
       {isAdmin && (
         <section className="mt-6 max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Actualizar Tasa de Cambio</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            Actualizar Tasa de Cambio
+          </h2>
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              updateTasa(appliedRate);
+              updateTasa();
             }}
           >
             <input
@@ -174,3 +194,4 @@ function App() {
 }
 
 export default App;
+
