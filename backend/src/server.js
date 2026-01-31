@@ -1,42 +1,34 @@
-import './cronJobs.js'; // Importar el cron job
+// src/server.js
+import dotenv from "dotenv";
+dotenv.config(); // DEBE ir primero
 
 import express from "express";
-import dotenv from "dotenv";
-import connectDB from "./config/db.js";
-import authRoutes from "./routes/authRoutes.js"; // Importar las rutas de autenticación
-import tasaRoutes from "./routes/tasaRoutes.js"; // Importar las rutas para manejar la tasa
+import mongoose from "mongoose";
+import tasaRoutes from "./routes/tasaRoutes.js";
 
-// Cargar variables de entorno
-dotenv.config();
-
-// Conectar a la base de datos
-connectDB();
-
-// Crear una instancia de la aplicación Express
 const app = express();
 
-// Middleware para parsear el cuerpo de las solicitudes en formato JSON
+// Middlewares
 app.use(express.json());
 
-// Usar las rutas de autenticación y tasa
-app.use("/api/auth", authRoutes); // Rutas de autenticación
-app.use("/api/tasa", tasaRoutes); // Rutas para manejar la tasa manual y del BCV
+// Rutas
+app.use("/api/tasa", tasaRoutes);
 
-// Ruta base / health check (IMPORTANTE PARA RENDER)
-app.get("/", (req, res) => {
-  res.status(200).json({
-    status: "ok",
-    service: "mini-bodegon-backend",
-    environment: process.env.NODE_ENV || "production",
+// Puerto
+const PORT = process.env.PORT || 4000;
+
+// Conexión a MongoDB y arranque del servidor
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("✅ MongoDB conectado");
+    app.listen(PORT, () => {
+      console.log(`Servidor corriendo en el puerto ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ Error al conectar MongoDB:", err.message);
+    process.exit(1);
   });
-});
-
-// Puerto obligatorio para Render
-const PORT = process.env.PORT || 3000;
-
-// Levantar el servidor
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
 
 

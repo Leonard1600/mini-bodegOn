@@ -1,35 +1,25 @@
 // backend/src/models/Product.js
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const productSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
-      required: true,
-    },
-    priceUSD: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    image: {
-      type: String,
-      default: null,
-    },
-    active: {
-      type: Boolean,
-      default: true,
-    },
+const productSchema = new mongoose.Schema({
+  nombre: {
+    type: String,
+    required: true,
   },
-  {
-    timestamps: true,
-  }
-);
+  precioDolar: {
+    type: Number,
+    required: true,
+  },
+  precioBolivar: {
+    type: Number,
+    required: true,
+  },
+  categoria: {
+    type: String,
+    required: true,
+  },
+});
 
-export default mongoose.model("Product", productSchema);
+const Product = mongoose.model('Product', productSchema);
+
+export default Product;

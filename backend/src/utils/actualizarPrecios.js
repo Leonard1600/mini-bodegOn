@@ -1,11 +1,11 @@
 // src/utils/actualizarPrecios.js
-import Product from '../models/Product.js'; // Asegúrate de que la importación tenga la extensión .js
-import Tasa from '../models/Tasa.js'; // Asegúrate de que la importación tenga la extensión .js
+import Product from '../models/Product.js'; // El modelo Producto
+import Tasa from '../models/Tasa.js'; // El modelo Tasa
 
 export const actualizarPrecios = async () => {
   try {
     // Obtener la tasa de cambio actual
-    const tasa = await Tasa.findOne().sort({ fechaActualizacion: -1 }).limit(1);
+    const tasa = await Tasa.findOne().sort({ fecha: -1 }).limit(1);
     if (!tasa) {
       throw new Error('No se encontró la tasa de cambio');
     }
@@ -15,7 +15,7 @@ export const actualizarPrecios = async () => {
 
     // Actualizar los precios de los productos con la tasa actual
     for (const producto of productos) {
-      const precioNuevo = Math.ceil(producto.precioDolar * tasa.valor); // Redondeamos hacia arriba
+      const precioNuevo = Math.ceil(producto.precioDolar * tasa.tasa); // Redondeamos hacia arriba
       producto.precioBolivar = precioNuevo;
       await producto.save();
     }
@@ -25,3 +25,4 @@ export const actualizarPrecios = async () => {
     console.error('Error al actualizar precios:', error);
   }
 };
+

@@ -1,12 +1,14 @@
- import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Catalog from "./components/Catalog";
 import { catalogByCategory } from "./data/catalog";
 
 function App() {
   const [categoriaActiva, setCategoriaActiva] = useState(null);
   const [carrito, setCarrito] = useState([]);
-
-  const appliedRate = 38.5;
+  const [appliedRate, setAppliedRate] = useState(38.5); // Tasa por defecto
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const comprarPorWhatsApp = () => {
     const mensaje =
@@ -18,6 +20,49 @@ function App() {
   const addToCart = (product) => {
     setCarrito((prev) => [...prev, product]);
   };
+
+  // Llamar a la API para obtener la tasa actual
+  const fetchTasa = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/api/tasa"); // Asegúrate de que la URL sea correcta
+      setAppliedRate(response.data.tasa);
+    } catch (err) {
+      console.error("Error al obtener la tasa: ", err);
+      setError("No se pudo obtener la tasa actual.");
+    }
+  };
+
+  // Llamar a la API para actualizar la tasa
+  const updateTasa = async (newRate) => {
+    try {
+      const response = await axios.put(
+        "http://localhost:4000/api/tasa", 
+        { tasa: newRate },
+        {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("adminToken")}`, // Token del admin
+          },
+        }
+      );
+      setAppliedRate(response.data.tasa); // Actualizar la tasa en el estado
+      setSuccess("Tasa actualizada correctamente.");
+      setError('');
+    } catch (err) {
+      setError("Error al actualizar la tasa. Asegúrate de que tienes permisos.");
+      setSuccess('');
+    }
+  };
+
+  // Fetch the current tasa when the app loads
+  useEffect(() => {
+    fetchTasa();
+  }, []);
+
+  // Verificar si el admin está logueado
+  const isAdmin = localStorage.getItem('adminToken');
+
+  // Mensaje de depuración
+  console.log('Admin Token:', isAdmin);
 
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-6 relative">
@@ -92,10 +137,38 @@ function App() {
           />
         </section>
       )}
+
+      {/* Actualización de tasa (solo visible si el admin está logueado) */}
+      {isAdmin && (
+        <section className="mt-6 max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md">
+          <h2 className="text-xl font-semibold mb-4">Actualizar Tasa de Cambio</h2>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              updateTasa(appliedRate);
+            }}
+          >
+            <input
+              type="number"
+              value={appliedRate}
+              onChange={(e) => setAppliedRate(e.target.value)}
+              className="p-2 border border-gray-300 rounded-lg mb-4"
+              min="0"
+              required
+            />
+            <button
+              type="submit"
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition"
+            >
+              Actualizar Tasa
+            </button>
+          </form>
+          {error && <p className="text-red-500 mt-2">{error}</p>}
+          {success && <p className="text-green-500 mt-2">{success}</p>}
+        </section>
+      )}
     </div>
   );
 }
 
 export default App;
-
- 
