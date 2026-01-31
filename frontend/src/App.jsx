@@ -6,7 +6,7 @@ import { catalogByCategory } from "./data/catalog";
 
 const API_BASE =
   import.meta.env.VITE_API_URL ||
-  "https://mini-bodegon-backend-leo.onrender.com";
+  "https://mini-bodegon-backend-leonard.onrender.com";
 
 function App() {
   const [categoriaActiva, setCategoriaActiva] = useState(null);
@@ -32,24 +32,22 @@ function App() {
     setCarrito((prev) => [...prev, product]);
   };
 
-  // 🔄 Obtener tasa (fuente de verdad)
+  // 🔄 Obtener tasa (FUENTE DE VERDAD)
   const fetchTasa = async () => {
     try {
       const { data } = await axios.get(`${API_BASE}/api/tasa`);
       setAppliedRate(data.appliedRate.rate);
       setBcvRate(data.bcvRate.rate);
       setLastUpdate(data.appliedRate.date);
-      return true;
     } catch (err) {
       console.error("Error al obtener la tasa", err);
-      return false;
     }
   };
 
   // ✏️ Actualizar tasa usada
   const updateTasa = async () => {
     try {
-      await axios.put(
+      await axios.post(
         `${API_BASE}/api/tasa/manual`,
         { rate: Number(appliedRate) },
         {
@@ -58,23 +56,19 @@ function App() {
           },
         }
       );
+
+      await fetchTasa();
+      alert("Tasa actualizada correctamente");
     } catch (err) {
-      console.warn("Advertencia de confirmación:", err);
-    } finally {
-      const ok = await fetchTasa();
-      if (ok) {
-        alert("Tasa actualizada correctamente");
-      } else {
-        alert("La tasa se actualizó, pero no se pudo confirmar visualmente.");
-      }
+      console.error(err);
+      alert("No se pudo actualizar la tasa");
     }
   };
 
-  // ❌ Cerrar cliente (SINCRONIZA ESTADO)
   const logoutClient = async () => {
     localStorage.removeItem("adminToken");
     setIsAdmin(false);
-    await fetchTasa(); // 🔑 evita que vuelva a una tasa vieja
+    await fetchTasa();
   };
 
   useEffect(() => {
@@ -146,7 +140,6 @@ function App() {
         />
       )}
 
-      {/* 🔽 ZONA DE ACCESO / PANEL CLIENTE (MISMO LUGAR) */}
       <div className="mt-10">
         {isAdmin ? (
           <div className="max-w-4xl mx-auto bg-white p-4 rounded-xl shadow">
@@ -155,7 +148,6 @@ function App() {
               <button
                 onClick={logoutClient}
                 className="text-red-500 font-bold text-xl"
-                title="Cerrar sesión"
               >
                 ✕
               </button>
