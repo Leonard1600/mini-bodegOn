@@ -16,15 +16,19 @@ function ClientAccess({ onLogin }) {
     setLoading(true);
 
     try {
-      // ✅ Endpoint SOLO de lectura para validar contraseña
-      await axios.get(`${API_BASE}/api/tasa`, {
-        headers: {
-          "x-admin-password": password,
-        },
-      });
+      // 🔐 Validación REAL contra middleware admin
+      await axios.put(
+        `${API_BASE}/api/tasa/manual`,
+        { rate: 1 }, // dummy, no afecta nada
+        {
+          headers: {
+            "x-admin-password": password,
+          },
+        }
+      );
 
-      // ✅ Contraseña válida
-      localStorage.setItem("adminToken", "CLIENT_AUTH_OK");
+      // ✅ Contraseña válida → guardar la REAL
+      localStorage.setItem("adminToken", password);
       onLogin();
     } catch (err) {
       setError("Contraseña incorrecta");

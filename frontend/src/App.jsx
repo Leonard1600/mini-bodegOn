@@ -14,6 +14,7 @@ function App() {
   const [appliedRate, setAppliedRate] = useState(null);
   const [bcvRate, setBcvRate] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
+
   const [isAdmin, setIsAdmin] = useState(
     Boolean(localStorage.getItem("adminToken"))
   );
@@ -43,30 +44,35 @@ function App() {
     }
   };
 
-  // ✏️ Actualizar tasa (ADMIN)
+  // ✏️ Actualizar tasa usada (CLIENTE)
   const updateTasa = async () => {
     try {
       await axios.put(
-        `${API_BASE}/api/tasa`,
-        { tasa: appliedRate },
+        `${API_BASE}/api/tasa/manual`,
+        { rate: Number(appliedRate) },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+            "x-admin-password": localStorage.getItem("adminToken"),
           },
         }
       );
-      fetchTasa();
+
+      await fetchTasa(); // refresca dólar + fecha
       alert("Tasa actualizada correctamente");
     } catch (err) {
-      alert("Error al actualizar la tasa");
+      console.error(err);
+      alert("No se pudo actualizar la tasa");
     }
   };
 
-  // 🔁 Carga inicial + refresco automático
+  // ❌ Cerrar cliente
+  const logoutClient = () => {
+    localStorage.removeItem("adminToken");
+    setIsAdmin(false);
+  };
+
   useEffect(() => {
     fetchTasa();
-    const interval = setInterval(fetchTasa, 5 * 60 * 1000); // cada 5 min
-    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -102,15 +108,20 @@ function App() {
         </button>
       </div>
 
-      {!isAdmin && (
-        <ClientAccess
-          onLogin={() => setIsAdmin(true)}
-        />
-      )}
-
+      {/* PANEL CLIENTE */}
       {isAdmin && (
         <div className="max-w-4xl mx-auto bg-white p-4 rounded-xl shadow mb-6">
-          <h2 className="font-bold mb-2">Actualizar tasa usada</h2>
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="font-bold">Actualizar tasa usada</h2>
+            <button
+              onClick={logoutClient}
+              className="text-red-500 font-bold text-xl"
+              title="Cerrar sesión"
+            >
+              ✕
+            </button>
+          </div>
+
           <input
             type="number"
             value={appliedRate}
@@ -155,8 +166,14 @@ function App() {
           addToCart={addToCart}
         />
       )}
+
+      {/* ACCESO CLIENTE AL FINAL */}
+      {!isAdmin && (
+        <ClientAccess onLogin={() => setIsAdmin(true)} />
+      )}
     </div>
   );
 }
 
 export default App;
+
