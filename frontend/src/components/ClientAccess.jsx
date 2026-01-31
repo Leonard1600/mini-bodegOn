@@ -16,19 +16,15 @@ function ClientAccess({ onLogin }) {
     setLoading(true);
 
     try {
-      // 🔐 Endpoint protegido SOLO para validar contraseña
-      await axios.put(
-        `${API_BASE}/api/tasa/manual`,
-        { rate: 1 }, // valor dummy, no afecta nada
-        {
-          headers: {
-            "x-admin-password": password,
-          },
-        }
-      );
+      // 🔐 Validación REAL: intentamos obtener la tasa protegida
+      await axios.get(`${API_BASE}/api/tasa`, {
+        headers: {
+          "x-admin-password": password,
+        },
+      });
 
-      // ✅ Contraseña válida
-      localStorage.setItem("adminToken", "CLIENT_AUTH_OK");
+      // ✅ Guardamos LA CONTRASEÑA REAL
+      localStorage.setItem("adminToken", password);
       onLogin();
     } catch (err) {
       setError("Contraseña incorrecta");

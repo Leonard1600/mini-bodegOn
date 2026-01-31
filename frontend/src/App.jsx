@@ -32,19 +32,21 @@ function App() {
     setCarrito((prev) => [...prev, product]);
   };
 
-  // 🔄 Obtener tasa
+  // 🔄 Obtener tasa (fuente de verdad)
   const fetchTasa = async () => {
     try {
       const { data } = await axios.get(`${API_BASE}/api/tasa`);
       setAppliedRate(data.appliedRate.rate);
       setBcvRate(data.bcvRate.rate);
       setLastUpdate(data.appliedRate.date);
+      return true;
     } catch (err) {
       console.error("Error al obtener la tasa", err);
+      return false;
     }
   };
 
-  // ✏️ Actualizar tasa usada (CLIENTE)
+  // ✏️ Actualizar tasa usada
   const updateTasa = async () => {
     try {
       await axios.put(
@@ -56,19 +58,23 @@ function App() {
           },
         }
       );
-
-      await fetchTasa(); // refresca dólar + fecha
-      alert("Tasa actualizada correctamente");
     } catch (err) {
-      console.error(err);
-      alert("No se pudo actualizar la tasa");
+      console.warn("Advertencia de confirmación:", err);
+    } finally {
+      const ok = await fetchTasa();
+      if (ok) {
+        alert("Tasa actualizada correctamente");
+      } else {
+        alert("La tasa se actualizó, pero no se pudo confirmar visualmente.");
+      }
     }
   };
 
-  // ❌ Cerrar cliente
-  const logoutClient = () => {
+  // ❌ Cerrar cliente (SINCRONIZA ESTADO)
+  const logoutClient = async () => {
     localStorage.removeItem("adminToken");
     setIsAdmin(false);
+    await fetchTasa(); // 🔑 evita que vuelva a una tasa vieja
   };
 
   useEffect(() => {
@@ -99,7 +105,9 @@ function App() {
       </header>
 
       <div className="max-w-4xl mx-auto mb-6 bg-white rounded-xl shadow p-4 flex justify-between">
-        <p>🛒 Carrito: <strong>{carrito.length}</strong></p>
+        <p>
+          🛒 Carrito: <strong>{carrito.length}</strong>
+        </p>
         <button
           onClick={comprarPorWhatsApp}
           className="bg-green-500 text-white px-4 py-2 rounded-full"
@@ -107,35 +115,6 @@ function App() {
           Comprar por WhatsApp
         </button>
       </div>
-
-      {/* PANEL CLIENTE */}
-      {isAdmin && (
-        <div className="max-w-4xl mx-auto bg-white p-4 rounded-xl shadow mb-6">
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="font-bold">Actualizar tasa usada</h2>
-            <button
-              onClick={logoutClient}
-              className="text-red-500 font-bold text-xl"
-              title="Cerrar sesión"
-            >
-              ✕
-            </button>
-          </div>
-
-          <input
-            type="number"
-            value={appliedRate}
-            onChange={(e) => setAppliedRate(e.target.value)}
-            className="border p-2 rounded mr-2"
-          />
-          <button
-            onClick={updateTasa}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            Actualizar
-          </button>
-        </div>
-      )}
 
       {!categoriaActiva && (
         <section className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -167,13 +146,40 @@ function App() {
         />
       )}
 
-      {/* ACCESO CLIENTE AL FINAL */}
-      {!isAdmin && (
-        <ClientAccess onLogin={() => setIsAdmin(true)} />
-      )}
+      {/* 🔽 ZONA DE ACCESO / PANEL CLIENTE (MISMO LUGAR) */}
+      <div className="mt-10">
+        {isAdmin ? (
+          <div className="max-w-4xl mx-auto bg-white p-4 rounded-xl shadow">
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="font-bold">Actualizar tasa usada</h2>
+              <button
+                onClick={logoutClient}
+                className="text-red-500 font-bold text-xl"
+                title="Cerrar sesión"
+              >
+                ✕
+              </button>
+            </div>
+
+            <input
+              type="number"
+              value={appliedRate}
+              onChange={(e) => setAppliedRate(e.target.value)}
+              className="border p-2 rounded mr-2"
+            />
+            <button
+              onClick={updateTasa}
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Actualizar
+            </button>
+          </div>
+        ) : (
+          <ClientAccess onLogin={() => setIsAdmin(true)} />
+        )}
+      </div>
     </div>
   );
 }
 
 export default App;
-
