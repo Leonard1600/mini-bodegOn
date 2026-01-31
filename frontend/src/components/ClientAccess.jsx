@@ -16,10 +16,10 @@ function ClientAccess({ onLogin }) {
     setLoading(true);
 
     try {
-      // 🔐 Validación REAL contra middleware admin
+      // 🔐 Endpoint protegido SOLO para validar contraseña
       await axios.put(
         `${API_BASE}/api/tasa/manual`,
-        { rate: 1 }, // dummy, no afecta nada
+        { rate: 1 }, // valor dummy, no afecta nada
         {
           headers: {
             "x-admin-password": password,
@@ -27,8 +27,8 @@ function ClientAccess({ onLogin }) {
         }
       );
 
-      // ✅ Contraseña válida → guardar la REAL
-      localStorage.setItem("adminToken", password);
+      // ✅ Contraseña válida
+      localStorage.setItem("adminToken", "CLIENT_AUTH_OK");
       onLogin();
     } catch (err) {
       setError("Contraseña incorrecta");
@@ -38,7 +38,7 @@ function ClientAccess({ onLogin }) {
   };
 
   return (
-    <div className="max-w-sm mx-auto bg-white p-6 rounded-xl shadow mt-8">
+    <div className="max-w-sm mx-auto bg-white p-6 rounded-xl shadow mt-10">
       <h2 className="text-xl font-bold mb-4 text-center">
         Acceso Cliente
       </h2>
@@ -72,3 +72,4 @@ function ClientAccess({ onLogin }) {
 }
 
 export default ClientAccess;
+
