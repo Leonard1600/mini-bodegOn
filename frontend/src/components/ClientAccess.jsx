@@ -16,18 +16,14 @@ function ClientAccess({ onLogin }) {
     setLoading(true);
 
     try {
-      // 🔐 Ping protegido solo para validar contraseña
-      await axios.put(
-        `${API_BASE}/api/tasa/manual`,
-        { rate: 1 }, // valor dummy, NO se guarda
-        {
-          headers: {
-            "x-admin-password": password,
-          },
-        }
-      );
+      // ✅ Endpoint SOLO de lectura para validar contraseña
+      await axios.get(`${API_BASE}/api/tasa`, {
+        headers: {
+          "x-admin-password": password,
+        },
+      });
 
-      // ✅ Si pasa el middleware, la contraseña es correcta
+      // ✅ Contraseña válida
       localStorage.setItem("adminToken", "CLIENT_AUTH_OK");
       onLogin();
     } catch (err) {
