@@ -1,71 +1,182 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Catalog from "./components/Catalog";
+import ClientAccess from "./components/ClientAccess";
+import { catalogByCategory } from "./data/catalog";
 
 const API_BASE =
   import.meta.env.VITE_API_URL ||
   "https://mini-bodegon-backend-leo.onrender.com";
 
-function ClientAccess({ onLogin }) {
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+function App() {
+  const [categoriaActiva, setCategoriaActiva] = useState(null);
+  const [carrito, setCarrito] = useState([]);
+  const [appliedRate, setAppliedRate] = useState(null);
+  const [bcvRate, setBcvRate] = useState(null);
+  const [lastUpdate, setLastUpdate] = useState(null);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+  const [isAdmin, setIsAdmin] = useState(
+    Boolean(localStorage.getItem("adminToken"))
+  );
 
+  const comprarPorWhatsApp = () => {
+    const mensaje =
+      "Hola, quiero hacer un pedido en Mini bodegOn. Quisiera información.";
+    window.open(
+      `https://wa.me/584142316762?text=${encodeURIComponent(mensaje)}`,
+      "_blank"
+    );
+  };
+
+  const addToCart = (product) => {
+    setCarrito((prev) => [...prev, product]);
+  };
+
+  // 🔄 Obtener tasa
+  const fetchTasa = async () => {
     try {
-      // 🔐 Validación REAL: intentamos obtener la tasa protegida
-      await axios.get(`${API_BASE}/api/tasa`, {
-        headers: {
-          "x-admin-password": password,
-        },
-      });
-
-      // ✅ Guardamos LA CONTRASEÑA REAL
-      localStorage.setItem("adminToken", password);
-      onLogin();
+      const { data } = await axios.get(`${API_BASE}/api/tasa`);
+      setAppliedRate(data.appliedRate.rate);
+      setBcvRate(data.bcvRate.rate);
+      setLastUpdate(data.appliedRate.date);
     } catch (err) {
-      setError("Contraseña incorrecta");
-    } finally {
-      setLoading(false);
+      console.error("Error al obtener la tasa", err);
     }
   };
 
+  // ✏️ Actualizar tasa usada (CLIENTE ADMIN)
+  const updateTasa = async () => {
+    try {
+      await axios.post(
+        `${API_BASE}/api/tasa/manual`,
+        { rate: Number(appliedRate) },
+        {
+          headers: {
+            "x-admin-password": localStorage.getItem("adminToken"),
+          },
+        }
+      );
+
+      await fetchTasa();
+      alert("Tasa actualizada correctamente");
+    } catch (err) {
+      console.error(err);
+      alert("No se pudo actualizar la tasa");
+    }
+  };
+
+  // ❌ Cerrar cliente
+  const logoutClient = () => {
+    localStorage.removeItem("adminToken");
+    setIsAdmin(false);
+  };
+
+  useEffect(() => {
+    fetchTasa();
+  }, []);
+
   return (
-    <div className="max-w-sm mx-auto bg-white p-6 rounded-xl shadow mt-10">
-      <h2 className="text-xl font-bold mb-4 text-center">
-        Acceso Cliente
-      </h2>
+    <div className="min-h-screen bg-gray-100 px-4 py-6 relative">
+      {appliedRate && bcvRate && (
+        <div className="absolute top-4 right-4 bg-white p-3 rounded-xl shadow text-xs text-right">
+          <p>
+            <strong>Fecha:</strong>{" "}
+            {new Date(lastUpdate).toLocaleDateString("es-VE")}
+          </p>
+          <p>
+            <strong>Tasa BCV:</strong> {bcvRate} Bs/USD
+          </p>
+          <p>
+            <strong>Tasa usada:</strong> {appliedRate} Bs/USD
+          </p>
+        </div>
+      )}
 
-      <form onSubmit={handleLogin} className="space-y-4">
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 border rounded-lg"
-          required
-        />
+      <header className="text-center mb-6 mt-6">
+        <h1 className="text-4xl font-extrabold text-gray-800">
+          Mini <span className="text-emerald-600">bodegOn</span>
+        </h1>
+      </header>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-emerald-600 text-white py-2 rounded-lg font-semibold hover:bg-emerald-700 transition"
-        >
-          {loading ? "Validando..." : "Entrar"}
-        </button>
-      </form>
-
-      {error && (
-        <p className="text-red-500 text-sm mt-3 text-center">
-          {error}
+      <div className="max-w-4xl mx-auto mb-6 bg-white rounded-xl shadow p-4 flex justify-between">
+        <p>
+          🛒 Carrito: <strong>{carrito.length}</strong>
         </p>
+        <button
+          onClick={comprarPorWhatsApp}
+          className="bg-green-500 text-white px-4 py-2 rounded-full"
+        >
+          Comprar por WhatsApp
+        </button>
+      </div>
+
+      {/* PANEL CLIENTE ADMIN */}
+      {isAdmin && (
+        <div className="max-w-4xl mx-auto bg-white p-4 rounded-xl shadow mb-6">
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="font-bold">Actualizar tasa usada</h2>
+            <button
+              onClick={logoutClient}
+              className="text-red-500 font-bold text-xl"
+              title="Cerrar sesión"
+            >
+              ✕
+            </button>
+          </div>
+
+          <input
+            type="number"
+            value={appliedRate}
+            onChange={(e) => setAppliedRate(e.target.value)}
+            className="border p-2 rounded mr-2"
+          />
+          <button
+            onClick={updateTasa}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Actualizar
+          </button>
+        </div>
+      )}
+
+      {!categoriaActiva && (
+        <section className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {catalogByCategory.map((cat) => (
+            <div
+              key={cat.id}
+              style={{
+                backgroundImage: `linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.4)),url("${cat.image}")`,
+              }}
+              className="h-48 rounded-2xl text-white flex flex-col justify-center items-center bg-cover"
+            >
+              <h2 className="text-2xl font-bold">{cat.name}</h2>
+              <button
+                onClick={() => setCategoriaActiva(cat)}
+                className="mt-3 bg-white text-black px-4 py-2 rounded-full"
+              >
+                Ver productos
+              </button>
+            </div>
+          ))}
+        </section>
+      )}
+
+      {categoriaActiva && (
+        <Catalog
+          category={categoriaActiva}
+          appliedRate={appliedRate}
+          addToCart={addToCart}
+        />
+      )}
+
+      {/* ACCESO CLIENTE (AL FINAL) */}
+      {!isAdmin && (
+        <ClientAccess onLogin={() => setIsAdmin(true)} />
       )}
     </div>
   );
 }
 
-export default ClientAccess;
+export default App;
+
 
