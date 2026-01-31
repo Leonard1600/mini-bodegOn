@@ -32,7 +32,6 @@ function App() {
     setCarrito((prev) => [...prev, product]);
   };
 
-  // 🔄 Obtener tasa (FUENTE DE VERDAD)
   const fetchTasa = async () => {
     try {
       const { data } = await axios.get(`${API_BASE}/api/tasa`);
@@ -44,7 +43,6 @@ function App() {
     }
   };
 
-  // ✏️ Actualizar tasa usada
   const updateTasa = async () => {
     try {
       await axios.post(
@@ -93,12 +91,12 @@ function App() {
       )}
 
       {/* LOGO */}
-      <header className="flex justify-center mb-6 mt-6">
-        <div className="bg-white p-3 rounded-2xl shadow">
+      <header className="flex justify-center mb-8 mt-6">
+        <div className="bg-gray-900 rounded-full shadow-lg w-[420px] h-36 overflow-hidden">
           <img
             src="/logo.png"
             alt="Mini bodegOn"
-            className="h-16 sm:h-20 object-contain"
+            className="w-full h-full object-fill rounded-full"
           />
         </div>
       </header>
@@ -180,3 +178,6 @@ function App() {
 }
 
 export default App;
+
+
+
