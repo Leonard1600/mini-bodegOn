@@ -4,9 +4,13 @@ import Catalog from "./components/Catalog";
 import { catalogByCategory } from "./data/catalog";
 
 /**
- * ✅ URL REAL DEL BACKEND EN PRODUCCIÓN (Render)
+ * ✅ API BASE
+ * 1. Usa variable de entorno en producción (Vercel)
+ * 2. Fallback seguro al backend de Render
  */
-const API_BASE = "https://mini-bodegon-backend-leo.onrender.com";
+const API_BASE =
+  import.meta.env.VITE_API_URL ||
+  "https://mini-bodegon-backend-leo.onrender.com";
 
 function App() {
   const [categoriaActiva, setCategoriaActiva] = useState(null);
