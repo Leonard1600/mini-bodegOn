@@ -4,9 +4,27 @@ dotenv.config(); // DEBE ir primero
 
 import express from "express";
 import mongoose from "mongoose";
+import cors from "cors";
 import tasaRoutes from "./routes/tasaRoutes.js";
 
 const app = express();
+
+/**
+ * ✅ CORS CONFIGURADO CORRECTAMENTE
+ * - Permite frontend en Vercel
+ * - Permite desarrollo local
+ */
+app.use(
+  cors({
+    origin: [
+      "https://mini-bodeg-on.vercel.app",
+      "http://localhost:5173",
+      "http://localhost:3000",
+    ],
+    methods: ["GET", "PUT"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // Middlewares
 app.use(express.json());
