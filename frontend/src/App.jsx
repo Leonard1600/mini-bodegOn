@@ -3,10 +3,14 @@ import axios from "axios";
 import Catalog from "./components/Catalog";
 import { catalogByCategory } from "./data/catalog";
 
+/* ✅ AGREGADO: URL base segura para producción y local */
+const API_BASE =
+  import.meta.env.VITE_API_URL || "http://localhost:4000";
+
 function App() {
   const [categoriaActiva, setCategoriaActiva] = useState(null);
   const [carrito, setCarrito] = useState([]);
-  const [appliedRate, setAppliedRate] = useState(38.5); // Tasa por defecto
+  const [appliedRate, setAppliedRate] = useState(38.5);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -21,10 +25,10 @@ function App() {
     setCarrito((prev) => [...prev, product]);
   };
 
-  // Llamar a la API para obtener la tasa actual
+  // ✅ Obtener tasa
   const fetchTasa = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/api/tasa"); // Asegúrate de que la URL sea correcta
+      const response = await axios.get(`${API_BASE}/api/tasa`);
       setAppliedRate(response.data.tasa);
     } catch (err) {
       console.error("Error al obtener la tasa: ", err);
@@ -32,19 +36,19 @@ function App() {
     }
   };
 
-  // Llamar a la API para actualizar la tasa
+  // ✅ Actualizar tasa (solo admin)
   const updateTasa = async (newRate) => {
     try {
       const response = await axios.put(
-        "http://localhost:4000/api/tasa", 
+        `${API_BASE}/api/tasa`,
         { tasa: newRate },
         {
           headers: {
-            "Authorization": `Bearer ${localStorage.getItem("adminToken")}`, // Token del admin
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
           },
         }
       );
-      setAppliedRate(response.data.tasa); // Actualizar la tasa en el estado
+      setAppliedRate(response.data.tasa);
       setSuccess("Tasa actualizada correctamente.");
       setError('');
     } catch (err) {
@@ -53,16 +57,13 @@ function App() {
     }
   };
 
-  // Fetch the current tasa when the app loads
   useEffect(() => {
     fetchTasa();
   }, []);
 
-  // Verificar si el admin está logueado
-  const isAdmin = localStorage.getItem('adminToken');
+  const isAdmin = localStorage.getItem("adminToken");
 
-  // Mensaje de depuración
-  console.log('Admin Token:', isAdmin);
+  console.log("Admin Token:", isAdmin);
 
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-6 relative">
@@ -138,7 +139,7 @@ function App() {
         </section>
       )}
 
-      {/* Actualización de tasa (solo visible si el admin está logueado) */}
+      {/* ADMIN */}
       {isAdmin && (
         <section className="mt-6 max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md">
           <h2 className="text-xl font-semibold mb-4">Actualizar Tasa de Cambio</h2>
@@ -163,6 +164,7 @@ function App() {
               Actualizar Tasa
             </button>
           </form>
+
           {error && <p className="text-red-500 mt-2">{error}</p>}
           {success && <p className="text-green-500 mt-2">{success}</p>}
         </section>

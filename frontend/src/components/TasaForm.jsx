@@ -1,54 +1,46 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 
 const TasaForm = () => {
-  const [tasa, setTasa] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-
-  const handleChange = (e) => {
-    setTasa(e.target.value);
-  };
+  const [tasaNueva, setTasaNueva] = useState("");
+  const [error, setError] = useState(null);
+  const [mensaje, setMensaje] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        'http://localhost:4000/api/tasa', // Asegúrate de que la URL sea correcta
-        { tasa: parseFloat(tasa) },
-        {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('adminToken')}`, // Aquí guardamos el token JWT
-          },
-        }
+        "/api/tasa/actualizar-tasa", 
+        { tasaNueva },
+        { headers: { "Authorization": "Bearer " + localStorage.getItem("adminToken") } }
       );
-      setSuccess('Tasa actualizada correctamente');
-      setError('');
+      setMensaje(response.data.msg);
+      setTasaNueva(""); // Limpiar campo
     } catch (err) {
-      setError('Error al actualizar la tasa. Asegúrate de que tienes permisos.');
-      setSuccess('');
+      setError("Hubo un error al actualizar la tasa.");
+      console.error(err);
     }
   };
 
   return (
     <div>
-      <h2>Modificar Tasa de Cambio</h2>
+      <h2>Actualizar Tasa de Cambio</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="tasa">Nueva Tasa de Cambio (Bs/USD):</label>
+          <label htmlFor="tasaNueva">Nueva Tasa de Cambio:</label>
           <input
             type="number"
-            id="tasa"
-            value={tasa}
-            onChange={handleChange}
+            id="tasaNueva"
+            value={tasaNueva}
+            onChange={(e) => setTasaNueva(e.target.value)}
             required
           />
         </div>
         <button type="submit">Actualizar Tasa</button>
       </form>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
+      {error && <div style={{ color: "red" }}>{error}</div>}
+      {mensaje && <div style={{ color: "green" }}>{mensaje}</div>}
     </div>
   );
 };
