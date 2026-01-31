@@ -32,13 +32,16 @@ function App() {
   };
 
   /**
-   * ✅ OBTENER TASA DESDE BACKEND
+   * ✅ OBTENER TASA DESDE BACKEND (CORREGIDO)
    */
   const fetchTasa = async () => {
     try {
       const { data } = await axios.get(`${API_BASE}/api/tasa`);
-      setAppliedRate(data.tasa);
-      setLastUpdate(data.updatedAt);
+
+      // 🔑 Backend devuelve appliedRate
+      setAppliedRate(data.appliedRate.rate);
+      setLastUpdate(data.appliedRate.date);
+
       setError("");
     } catch (err) {
       console.error("Error al obtener la tasa:", err);
@@ -48,6 +51,8 @@ function App() {
 
   /**
    * ✅ ACTUALIZAR TASA (ADMIN)
+   * NOTA: esta parte se ajustará luego al endpoint MANUAL,
+   * por ahora se deja intacta
    */
   const updateTasa = async () => {
     try {
@@ -198,4 +203,3 @@ function App() {
 }
 
 export default App;
-
