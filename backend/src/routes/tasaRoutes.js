@@ -1,23 +1,22 @@
 import express from "express";
 import {
-  getExchangeRate,
-  updateExchangeRate,
+  getActiveRate,
+  setManualRate,
+  getBCVRate,
 } from "../controllers/exchangeRate.controller.js";
+
 import auth from "../middleware/auth.js";
 
 const router = express.Router();
 
-/**
- * ✅ OBTENER TASA (PÚBLICO)
- * GET /api/tasa
- */
-router.get("/", getExchangeRate);
+// Obtener tasa activa (la que usa el sistema)
+router.get("/", getActiveRate);
 
-/**
- * 🔒 ACTUALIZAR TASA (ADMIN)
- * PUT /api/tasa
- */
-router.put("/", auth, updateExchangeRate);
+// Obtener tasa BCV (solo referencia)
+router.get("/bcv", getBCVRate);
+
+// Definir tasa manual (solo admin)
+router.post("/manual", auth, setManualRate);
 
 export default router;
 
