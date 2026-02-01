@@ -20,12 +20,10 @@ function App() {
     Boolean(localStorage.getItem("adminToken"))
   );
 
-  /* 🛒 AGREGAR AL CARRITO */
   const addToCart = (product) => {
     setCarrito((prev) => [...prev, product]);
   };
 
-  /* 📲 WHATSAPP CON PRODUCTOS + TOTAL */
   const comprarPorWhatsApp = () => {
     if (carrito.length === 0) {
       alert("El carrito está vacío");
@@ -50,7 +48,6 @@ function App() {
     );
   };
 
-  /* 💱 TASAS */
   const fetchTasa = async () => {
     try {
       const { data } = await axios.get(`${API_BASE}/api/tasa`);
@@ -66,7 +63,6 @@ function App() {
     fetchTasa();
   }, []);
 
-  /* 🔍 BÚSQUEDA GLOBAL */
   useEffect(() => {
     if (!busqueda.trim()) return;
 
@@ -86,7 +82,18 @@ function App() {
   const enHome = !categoriaActiva;
 
   return (
-    <div className="min-h-screen bg-gray-100 px-4 py-6 relative">
+    <div
+      className="
+        min-h-screen
+        px-4
+        py-6
+        relative
+        bg-gradient-to-b
+        from-[#e8f2ff]
+        via-[#f2f6fb]
+        to-white
+      "
+    >
       {/* TASAS — SOLO HOME */}
       {enHome && appliedRate && bcvRate && (
         <div className="absolute -top-2 right-2 bg-white px-3 py-2 rounded-md shadow text-[10px] text-right leading-tight">
@@ -106,7 +113,7 @@ function App() {
       {/* LOGO — SOLO HOME */}
       {enHome && (
         <header className="flex justify-center mb-6 mt-10">
-          <div className="w-[720px] h-[180px] rounded-full overflow-hidden">
+          <div className="w-[720px] h-[180px] rounded-full overflow-hidden bg-white shadow">
             <img
               src="/logo.png"
               alt="Mini bodegOn"
@@ -117,27 +124,25 @@ function App() {
       )}
 
       {/* HEADER PRINCIPAL */}
-      <div className="max-w-4xl mx-auto mb-4 bg-white rounded-xl shadow p-3 flex flex-col sm:flex-row gap-2">
+      <div className="max-w-4xl mx-auto mb-4 bg-white rounded-xl shadow p-3 flex gap-2 items-center">
         <input
           type="text"
           placeholder="🔍 Buscar producto..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          className="w-full sm:flex-1 border border-amber-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+          className="flex-1 border border-amber-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
         />
 
-        <div className="flex items-center justify-center gap-3">
-          <span className="text-sm font-semibold">
-            🛒 {carrito.length}
-          </span>
+        <span className="text-sm font-semibold">
+          🛒 {carrito.length}
+        </span>
 
-          <button
-            onClick={comprarPorWhatsApp}
-            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full text-sm whitespace-nowrap"
-          >
-            WhatsApp
-          </button>
-        </div>
+        <button
+          onClick={comprarPorWhatsApp}
+          className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-full text-sm whitespace-nowrap"
+        >
+          WhatsApp
+        </button>
       </div>
 
       {/* CATEGORÍAS */}
@@ -149,7 +154,7 @@ function App() {
               style={{
                 backgroundImage: `linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.4)),url("${cat.image}")`,
               }}
-              className="h-48 rounded-2xl text-white flex flex-col justify-center items-center bg-cover"
+              className="h-48 rounded-2xl text-white flex flex-col justify-center items-center bg-cover shadow"
             >
               <h2 className="text-2xl font-bold">{cat.name}</h2>
               <button
@@ -194,6 +199,7 @@ function App() {
 }
 
 export default App;
+
 
 
 
