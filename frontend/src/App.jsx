@@ -20,10 +20,12 @@ function App() {
     Boolean(localStorage.getItem("adminToken"))
   );
 
+  /* 🛒 AGREGAR AL CARRITO */
   const addToCart = (product) => {
     setCarrito((prev) => [...prev, product]);
   };
 
+  /* 📲 WHATSAPP CON PRODUCTOS + TOTAL */
   const comprarPorWhatsApp = () => {
     if (carrito.length === 0) {
       alert("El carrito está vacío");
@@ -48,6 +50,7 @@ function App() {
     );
   };
 
+  /* 💱 TASAS */
   const fetchTasa = async () => {
     try {
       const { data } = await axios.get(`${API_BASE}/api/tasa`);
@@ -63,6 +66,7 @@ function App() {
     fetchTasa();
   }, []);
 
+  /* 🔍 BÚSQUEDA GLOBAL */
   useEffect(() => {
     if (!busqueda.trim()) return;
 
@@ -137,11 +141,20 @@ function App() {
           🛒 {carrito.length}
         </span>
 
+        {/* BOTÓN WHATSAPP — SOLO ICONO (CORRECCIÓN) */}
         <button
           onClick={comprarPorWhatsApp}
-          className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-full text-sm whitespace-nowrap"
+          className="w-10 h-10 flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded-full shrink-0"
+          aria-label="Comprar por WhatsApp"
         >
-          WhatsApp
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 32 32"
+            fill="currentColor"
+            className="w-5 h-5"
+          >
+            <path d="M16 2C8.3 2 2 8.1 2 15.6c0 2.7.8 5.3 2.4 7.5L2 30l7-2.3c2.1 1.1 4.5 1.7 7 1.7 7.7 0 14-6.1 14-13.8S23.7 2 16 2zm0 24.9c-2.2 0-4.3-.6-6.1-1.6l-.4-.2-4.1 1.3 1.4-4-.3-.4c-1.3-1.9-2-4.1-2-6.4C4.5 9.3 9.7 4.3 16 4.3S27.5 9.3 27.5 15.6 22.3 26.9 16 26.9z"/>
+          </svg>
         </button>
       </div>
 
