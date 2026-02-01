@@ -117,25 +117,27 @@ function App() {
       )}
 
       {/* HEADER PRINCIPAL */}
-      <div className="max-w-4xl mx-auto mb-4 bg-white rounded-xl shadow p-3 flex gap-2 items-center">
+      <div className="max-w-4xl mx-auto mb-4 bg-white rounded-xl shadow p-3 flex flex-col sm:flex-row gap-2">
         <input
           type="text"
           placeholder="🔍 Buscar producto..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          className="flex-1 border border-amber-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+          className="w-full sm:flex-1 border border-amber-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
         />
 
-        <span className="text-sm font-semibold">
-          🛒 {carrito.length}
-        </span>
+        <div className="flex items-center justify-center gap-3">
+          <span className="text-sm font-semibold">
+            🛒 {carrito.length}
+          </span>
 
-        <button
-          onClick={comprarPorWhatsApp}
-          className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-full text-sm whitespace-nowrap"
-        >
-          WhatsApp
-        </button>
+          <button
+            onClick={comprarPorWhatsApp}
+            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full text-sm whitespace-nowrap"
+          >
+            WhatsApp
+          </button>
+        </div>
       </div>
 
       {/* CATEGORÍAS */}
@@ -192,5 +194,6 @@ function App() {
 }
 
 export default App;
+
 
 
