@@ -10,11 +10,11 @@ function CategoryCard({ category, onSelect }) {
         cursor-pointer
         bg-white
         border
-        rounded-xl
+        rounded-lg
         shadow-sm
         hover:shadow-md
         transition
-        p-6
+        p-4
         flex
         flex-col
         items-center
@@ -24,12 +24,12 @@ function CategoryCard({ category, onSelect }) {
       "
     >
       {/* Nombre categoría */}
-      <h3 className="text-xl font-semibold text-gray-800 mb-2">
+      <h3 className="text-sm font-semibold text-gray-800 mb-1">
         {category.name}
       </h3>
 
       {/* Cantidad de productos */}
-      <p className="text-sm text-gray-600">
+      <p className="text-xs text-gray-600">
         {productCount} {productCount === 1 ? "producto" : "productos"}
       </p>
     </div>

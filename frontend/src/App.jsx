@@ -10,6 +10,7 @@ const API_BASE =
 
 function App() {
   const [categoriaActiva, setCategoriaActiva] = useState(null);
+  const [busqueda, setBusqueda] = useState("");
   const [carrito, setCarrito] = useState([]);
   const [appliedRate, setAppliedRate] = useState(null);
   const [bcvRate, setBcvRate] = useState(null);
@@ -43,56 +44,47 @@ function App() {
     }
   };
 
-  const updateTasa = async () => {
-    try {
-      await axios.post(
-        `${API_BASE}/api/tasa/manual`,
-        { rate: Number(appliedRate) },
-        {
-          headers: {
-            "x-admin-password": localStorage.getItem("adminToken"),
-          },
-        }
-      );
-
-      await fetchTasa();
-      alert("Tasa actualizada correctamente");
-    } catch (err) {
-      console.error(err);
-      alert("No se pudo actualizar la tasa");
-    }
-  };
-
-  const logoutClient = async () => {
-    localStorage.removeItem("adminToken");
-    setIsAdmin(false);
-    await fetchTasa();
-  };
-
   useEffect(() => {
     fetchTasa();
   }, []);
+
+  /* 🔍 BÚSQUEDA GLOBAL CORRECTA */
+  useEffect(() => {
+    if (!busqueda.trim()) return;
+
+    const search = busqueda.toLowerCase();
+
+    const categoriaEncontrada = catalogByCategory.find((cat) =>
+      cat.products.some((p) =>
+        p.name.toLowerCase().includes(search)
+      )
+    );
+
+    if (categoriaEncontrada) {
+      setCategoriaActiva(categoriaEncontrada);
+    }
+  }, [busqueda]);
 
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-6 relative">
       {/* TASAS */}
       {appliedRate && bcvRate && (
-        <div className="absolute top-1 right-1 bg-white px-2 py-1 rounded-md shadow text-[10px] text-right leading-tight">
-          <p>
+        <div className="absolute -top-2 right-2 bg-white px-3 py-2 rounded-md shadow text-[10px] text-right leading-tight">
+          <p className="text-gray-500">
             <strong>Fecha:</strong>{" "}
             {new Date(lastUpdate).toLocaleDateString("es-VE")}
           </p>
-          <p>
+          <p className="text-gray-700">
             <strong>Tasa BCV:</strong> {bcvRate} Bs/USD
           </p>
-          <p className="text-emerald-600 font-semibold">
+          <p className="mt-1 px-1 rounded bg-amber-100 text-amber-700 font-semibold">
             <strong>Tasa usada:</strong> {appliedRate} Bs/USD
           </p>
         </div>
       )}
 
-      {/* LOGO — OVALADO REAL */}
-      <header className="flex justify-center mb-10 mt-10">
+      {/* LOGO */}
+      <header className="flex justify-center mb-8 mt-10">
         <div className="w-[720px] h-[180px] rounded-full overflow-hidden">
           <img
             src="/logo.png"
@@ -102,19 +94,39 @@ function App() {
         </div>
       </header>
 
-      {/* CARRITO */}
-      <div className="max-w-4xl mx-auto mb-6 bg-white rounded-xl shadow p-4 flex justify-between items-center">
+      {/* HEADER PRINCIPAL */}
+      <div className="max-w-4xl mx-auto mb-6 bg-white rounded-xl shadow p-4 flex flex-col sm:flex-row gap-3 items-center">
+        <input
+          type="text"
+          placeholder="🔍 Buscar producto (ej: harina, arroz, salsa...)"
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          className="
+            flex-1
+            border
+            border-amber-300
+            rounded-full
+            px-4
+            py-2
+            focus:outline-none
+            focus:ring-2
+            focus:ring-amber-400
+          "
+        />
+
         <p className="text-xl">
           🛒 <strong>{carrito.length}</strong>
         </p>
+
         <button
           onClick={comprarPorWhatsApp}
-          className="bg-green-500 text-white px-4 py-2 rounded-full"
+          className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full"
         >
           Comprar por WhatsApp
         </button>
       </div>
 
+      {/* CATEGORÍAS */}
       {!categoriaActiva && (
         <section className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6">
           {catalogByCategory.map((cat) => (
@@ -127,7 +139,10 @@ function App() {
             >
               <h2 className="text-2xl font-bold">{cat.name}</h2>
               <button
-                onClick={() => setCategoriaActiva(cat)}
+                onClick={() => {
+                  setCategoriaActiva(cat);
+                  setBusqueda("");
+                }}
                 className="mt-3 bg-white text-black px-4 py-2 rounded-full"
               >
                 Ver productos
@@ -137,49 +152,32 @@ function App() {
         </section>
       )}
 
+      {/* PRODUCTOS */}
       {categoriaActiva && (
-        <Catalog
-          category={categoriaActiva}
-          appliedRate={appliedRate}
-          addToCart={addToCart}
-        />
+        <div className="max-w-4xl mx-auto">
+          <button
+            onClick={() => {
+              setCategoriaActiva(null);
+              setBusqueda("");
+            }}
+            className="mb-4 bg-gray-300 px-4 py-2 rounded-full"
+          >
+            ⬅ Volver a categorías
+          </button>
+
+          <Catalog
+            category={categoriaActiva}
+            appliedRate={appliedRate}
+            addToCart={addToCart}
+            search={busqueda}
+          />
+        </div>
       )}
 
-      <div className="mt-10">
-        {isAdmin ? (
-          <div className="max-w-4xl mx-auto bg-white p-4 rounded-xl shadow">
-            <div className="flex justify-between items-center mb-3">
-              <h2 className="font-bold">Actualizar tasa usada</h2>
-              <button
-                onClick={logoutClient}
-                className="text-red-500 font-bold text-xl"
-              >
-                ✕
-              </button>
-            </div>
-
-            <input
-              type="number"
-              value={appliedRate}
-              onChange={(e) => setAppliedRate(e.target.value)}
-              className="border p-2 rounded mr-2"
-            />
-            <button
-              onClick={updateTasa}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Actualizar
-            </button>
-          </div>
-        ) : (
-          <ClientAccess onLogin={() => setIsAdmin(true)} />
-        )}
-      </div>
+      {!isAdmin && <ClientAccess onLogin={() => setIsAdmin(true)} />}
     </div>
   );
 }
 
 export default App;
-
-
 

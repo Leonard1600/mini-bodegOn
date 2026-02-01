@@ -2,37 +2,45 @@ import React from "react";
 
 function ProductCard({ product, priceVES, onAddToCart }) {
   const handleImageError = (e) => {
-    e.target.src = "/no-image.png"; // imagen local de respaldo
+    e.target.src = "/no-image.png";
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-4 flex flex-col">
+    <div className="bg-white rounded-md shadow-sm p-2 flex flex-col">
+      {/* Imagen */}
       <img
         src={product.image}
         alt={product.name}
         onError={handleImageError}
-        className="w-full h-40 object-cover rounded mb-3"
+        className="w-full h-24 object-cover rounded mb-2"
       />
 
-      <h3 className="font-semibold text-lg">{product.name}</h3>
+      {/* Nombre */}
+      <h3 className="text-sm font-medium leading-tight mb-1 line-clamp-2">
+        {product.name}
+      </h3>
 
-      <p className="text-sm text-gray-600 mb-2">
+      {/* Precio */}
+      <p className="text-xs text-gray-700 mb-2">
         Bs.{" "}
         {priceVES.toLocaleString("es-VE", {
-          minimumFractionDigits: 2,
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
         })}
       </p>
 
+      {/* Botón */}
       <button
         onClick={() => onAddToCart(product)}
-        className="mt-auto bg-amber-500 hover:bg-amber-600 text-white py-2 px-4 rounded"
+        className="mt-auto bg-amber-500 hover:bg-amber-600 text-white text-xs py-1.5 rounded"
       >
-        Agregar al carrito
+        Agregar
       </button>
     </div>
   );
 }
 
 export default ProductCard;
+
 
 
