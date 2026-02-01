@@ -48,7 +48,10 @@ function App() {
     fetchTasa();
   }, []);
 
-  /* 🔍 BÚSQUEDA GLOBAL → entra a la categoría correcta */
+  /* 🔍 BÚSQUEDA GLOBAL
+     - Entra a la categoría correcta
+     - NO borra la búsqueda
+  */
   useEffect(() => {
     if (!busqueda.trim()) return;
 
@@ -87,7 +90,7 @@ function App() {
 
       {/* LOGO — SOLO HOME */}
       {enHome && (
-        <header className="flex justify-center mb-8 mt-10">
+        <header className="flex justify-center mb-6 mt-10">
           <div className="w-[720px] h-[180px] rounded-full overflow-hidden">
             <img
               src="/logo.png"
@@ -98,35 +101,25 @@ function App() {
         </header>
       )}
 
-      {/* HEADER PRINCIPAL (SIEMPRE VISIBLE) */}
-      <div className="max-w-4xl mx-auto mb-6 bg-white rounded-xl shadow p-4 flex flex-col sm:flex-row gap-3 items-center">
+      {/* HEADER PRINCIPAL — SIEMPRE VISIBLE */}
+      <div className="max-w-4xl mx-auto mb-4 bg-white rounded-xl shadow p-3 flex gap-2 items-center">
         <input
           type="text"
-          placeholder="🔍 Buscar producto (ej: harina, arroz, salsa...)"
+          placeholder="🔍 Buscar producto (harina, arroz, salsa...)"
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          className="
-            flex-1
-            border
-            border-amber-300
-            rounded-full
-            px-4
-            py-2
-            focus:outline-none
-            focus:ring-2
-            focus:ring-amber-400
-          "
+          className="flex-1 border border-amber-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
         />
 
-        <p className="text-xl">
-          🛒 <strong>{carrito.length}</strong>
-        </p>
+        <span className="text-sm font-semibold">
+          🛒 {carrito.length}
+        </span>
 
         <button
           onClick={comprarPorWhatsApp}
-          className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full"
+          className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-full text-sm"
         >
-          Comprar por WhatsApp
+          WhatsApp
         </button>
       </div>
 
@@ -145,7 +138,6 @@ function App() {
               <button
                 onClick={() => {
                   setCategoriaActiva(cat);
-                  setBusqueda("");
                 }}
                 className="mt-3 bg-white text-black px-4 py-2 rounded-full"
               >
@@ -164,7 +156,7 @@ function App() {
               setCategoriaActiva(null);
               setBusqueda("");
             }}
-            className="mb-4 bg-gray-300 px-4 py-2 rounded-full"
+            className="mb-4 bg-gray-300 px-4 py-2 rounded-full text-sm"
           >
             ⬅ Volver a categorías
           </button>
