@@ -48,7 +48,7 @@ function App() {
     fetchTasa();
   }, []);
 
-  /* 🔍 BÚSQUEDA GLOBAL CORRECTA */
+  /* 🔍 BÚSQUEDA GLOBAL → entra a la categoría correcta */
   useEffect(() => {
     if (!busqueda.trim()) return;
 
@@ -65,10 +65,12 @@ function App() {
     }
   }, [busqueda]);
 
+  const enHome = !categoriaActiva;
+
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-6 relative">
-      {/* TASAS */}
-      {appliedRate && bcvRate && (
+      {/* TASAS — SOLO HOME */}
+      {enHome && appliedRate && bcvRate && (
         <div className="absolute -top-2 right-2 bg-white px-3 py-2 rounded-md shadow text-[10px] text-right leading-tight">
           <p className="text-gray-500">
             <strong>Fecha:</strong>{" "}
@@ -83,18 +85,20 @@ function App() {
         </div>
       )}
 
-      {/* LOGO */}
-      <header className="flex justify-center mb-8 mt-10">
-        <div className="w-[720px] h-[180px] rounded-full overflow-hidden">
-          <img
-            src="/logo.png"
-            alt="Mini bodegOn"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </header>
+      {/* LOGO — SOLO HOME */}
+      {enHome && (
+        <header className="flex justify-center mb-8 mt-10">
+          <div className="w-[720px] h-[180px] rounded-full overflow-hidden">
+            <img
+              src="/logo.png"
+              alt="Mini bodegOn"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </header>
+      )}
 
-      {/* HEADER PRINCIPAL */}
+      {/* HEADER PRINCIPAL (SIEMPRE VISIBLE) */}
       <div className="max-w-4xl mx-auto mb-6 bg-white rounded-xl shadow p-4 flex flex-col sm:flex-row gap-3 items-center">
         <input
           type="text"
@@ -127,7 +131,7 @@ function App() {
       </div>
 
       {/* CATEGORÍAS */}
-      {!categoriaActiva && (
+      {enHome && (
         <section className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6">
           {catalogByCategory.map((cat) => (
             <div
@@ -174,10 +178,14 @@ function App() {
         </div>
       )}
 
-      {!isAdmin && <ClientAccess onLogin={() => setIsAdmin(true)} />}
+      {/* ACCESO CLIENTE — SOLO HOME */}
+      {enHome && !isAdmin && (
+        <ClientAccess onLogin={() => setIsAdmin(true)} />
+      )}
     </div>
   );
 }
 
 export default App;
+
 
