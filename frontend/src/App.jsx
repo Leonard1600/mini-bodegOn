@@ -75,8 +75,9 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-6 relative">
+      {/* TASAS */}
       {appliedRate && bcvRate && (
-        <div className="absolute top-4 right-4 bg-white p-3 rounded-xl shadow text-xs text-right">
+        <div className="absolute top-1 right-1 bg-white px-2 py-1 rounded-md shadow text-[10px] text-right leading-tight">
           <p>
             <strong>Fecha:</strong>{" "}
             {new Date(lastUpdate).toLocaleDateString("es-VE")}
@@ -84,26 +85,27 @@ function App() {
           <p>
             <strong>Tasa BCV:</strong> {bcvRate} Bs/USD
           </p>
-          <p>
+          <p className="text-emerald-600 font-semibold">
             <strong>Tasa usada:</strong> {appliedRate} Bs/USD
           </p>
         </div>
       )}
 
-      {/* LOGO */}
-      <header className="flex justify-center mb-8 mt-6">
-        <div className="bg-gray-900 rounded-full shadow-lg w-[420px] h-36 overflow-hidden">
+      {/* LOGO — OVALADO REAL */}
+      <header className="flex justify-center mb-10 mt-10">
+        <div className="w-[720px] h-[180px] rounded-full overflow-hidden">
           <img
             src="/logo.png"
             alt="Mini bodegOn"
-            className="w-full h-full object-fill rounded-full"
+            className="w-full h-full object-cover"
           />
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto mb-6 bg-white rounded-xl shadow p-4 flex justify-between">
-        <p>
-          🛒 Carrito: <strong>{carrito.length}</strong>
+      {/* CARRITO */}
+      <div className="max-w-4xl mx-auto mb-6 bg-white rounded-xl shadow p-4 flex justify-between items-center">
+        <p className="text-xl">
+          🛒 <strong>{carrito.length}</strong>
         </p>
         <button
           onClick={comprarPorWhatsApp}
