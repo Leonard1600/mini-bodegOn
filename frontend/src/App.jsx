@@ -20,19 +20,37 @@ function App() {
     Boolean(localStorage.getItem("adminToken"))
   );
 
+  /* 🛒 AGREGAR AL CARRITO */
+  const addToCart = (product) => {
+    setCarrito((prev) => [...prev, product]);
+  };
+
+  /* 📲 WHATSAPP CON PRODUCTOS + TOTAL */
   const comprarPorWhatsApp = () => {
-    const mensaje =
-      "Hola, quiero hacer un pedido en Mini bodegOn. Quisiera información.";
+    if (carrito.length === 0) {
+      alert("El carrito está vacío");
+      return;
+    }
+
+    let total = 0;
+
+    const lista = carrito
+      .map((p) => {
+        const precio = Math.ceil(p.priceUSD * appliedRate);
+        total += precio;
+        return `- ${p.name} — Bs. ${precio}`;
+      })
+      .join("\n");
+
+    const mensaje = `Hola, quiero hacer un pedido en Mini bodegOn:\n\n${lista}\n\nTotal: Bs. ${total}`;
+
     window.open(
       `https://wa.me/584142316762?text=${encodeURIComponent(mensaje)}`,
       "_blank"
     );
   };
 
-  const addToCart = (product) => {
-    setCarrito((prev) => [...prev, product]);
-  };
-
+  /* 💱 TASAS */
   const fetchTasa = async () => {
     try {
       const { data } = await axios.get(`${API_BASE}/api/tasa`);
@@ -48,10 +66,7 @@ function App() {
     fetchTasa();
   }, []);
 
-  /* 🔍 BÚSQUEDA GLOBAL
-     - Entra a la categoría correcta
-     - NO borra la búsqueda
-  */
+  /* 🔍 BÚSQUEDA GLOBAL */
   useEffect(() => {
     if (!busqueda.trim()) return;
 
@@ -101,11 +116,11 @@ function App() {
         </header>
       )}
 
-      {/* HEADER PRINCIPAL — SIEMPRE VISIBLE */}
+      {/* HEADER PRINCIPAL */}
       <div className="max-w-4xl mx-auto mb-4 bg-white rounded-xl shadow p-3 flex gap-2 items-center">
         <input
           type="text"
-          placeholder="🔍 Buscar producto (harina, arroz, salsa...)"
+          placeholder="🔍 Buscar producto..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
           className="flex-1 border border-amber-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
@@ -117,7 +132,7 @@ function App() {
 
         <button
           onClick={comprarPorWhatsApp}
-          className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-full text-sm"
+          className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-full text-sm whitespace-nowrap"
         >
           WhatsApp
         </button>
@@ -136,9 +151,7 @@ function App() {
             >
               <h2 className="text-2xl font-bold">{cat.name}</h2>
               <button
-                onClick={() => {
-                  setCategoriaActiva(cat);
-                }}
+                onClick={() => setCategoriaActiva(cat)}
                 className="mt-3 bg-white text-black px-4 py-2 rounded-full"
               >
                 Ver productos
