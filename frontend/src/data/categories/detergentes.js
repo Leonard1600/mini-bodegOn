@@ -1,24 +1,21 @@
 const detergentes = [
-  // Jabones
-  { id: 1, name: "Jabón Las Llaves 250gr", priceUSD: 0.9, image: "/detergentes/jabon.png" },
-  { id: 2, name: "Jabón Popular", priceUSD: 0.8, image: "/detergentes/jabon.png" },
+  { id: "det-001", name: "Jabón Las Llaves 250gr", priceUSD: 1.39, image: "" },
+  { id: "det-002", name: "Jabón Popular", priceUSD: 0.99, image: "" },
 
-  // Detergentes en polvo
-  { id: 3, name: "Ace Alive 200gr", priceUSD: 0.9, image: "/detergentes/detergente.png" },
-  { id: 4, name: "Ace Alive 500gr", priceUSD: 1.8, image: "/detergentes/detergente.png" },
-  { id: 5, name: "Ace Alive 1kg", priceUSD: 3.2, image: "/detergentes/detergente.png" },
-  { id: 6, name: "Ace Oso Blanco 400gr", priceUSD: 1.5, image: "/detergentes/detergente.png" },
+  { id: "det-003", name: "Ace Alive 200gr", priceUSD: 0.81, image: "" },
+  { id: "det-004", name: "Ace Alive 500gr", priceUSD: 1.52, image: "" },
+  { id: "det-005", name: "Ace Alive 1kg", priceUSD: 3.71, image: "" },
 
-  // Suavizantes
-  { id: 7, name: "Suavizante Suavitel Sobre", priceUSD: 0.7, image: "/detergentes/suavizante.png" },
+  { id: "det-006", name: "Ace Oso Blanco 400gr", priceUSD: 1.06, image: "" },
 
-  // Lavaplatos
-  { id: 8, name: "Axion 150gr", priceUSD: 1.0, image: "/detergentes/lavaplatos.png" },
+  { id: "det-007", name: "Suavizante Suavitel (sobre)", priceUSD: 1.07, image: "" },
 
-  // Desinfectantes y cloros
-  { id: 9, name: "Desinfectante Oso Blanco 1L", priceUSD: 1.4, image: "/detergentes/desinfectante.png" },
-  { id: 10, name: "Cloro Power 1L", priceUSD: 1.1, image: "/detergentes/cloro.png" },
-  { id: 11, name: "Cloro Biomax 1L", priceUSD: 1.0, image: "/detergentes/cloro.png" },
+  { id: "det-008", name: "Axion 150gr", priceUSD: 1.33, image: "" },
+
+  { id: "det-009", name: "Desinfectante Oso Blanco 1L", priceUSD: 1.83, image: "" },
+
+  { id: "det-010", name: "Cloro Power 1L", priceUSD: 1.14, image: "" },
+  { id: "det-011", name: "Cloro Biomax 1L", priceUSD: 1.18, image: "" },
 ];
 
 export default detergentes;

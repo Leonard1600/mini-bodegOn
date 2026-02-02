@@ -1,87 +1,142 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Catalog from "./components/Catalog";
 import ClientAccess from "./components/ClientAccess";
 import { catalogByCategory } from "./data/catalog";
-
-const API_BASE =
-  import.meta.env.VITE_API_URL ||
-  "https://mini-bodegon-backend-leonard.onrender.com";
 
 function App() {
   const [categoriaActiva, setCategoriaActiva] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [carrito, setCarrito] = useState([]);
   const [appliedRate, setAppliedRate] = useState(null);
-  const [bcvRate, setBcvRate] = useState(null);
-  const [lastUpdate, setLastUpdate] = useState(null);
 
-  const [isAdmin, setIsAdmin] = useState(
-    Boolean(localStorage.getItem("adminToken"))
-  );
+  // ====== REDONDEO AL PRÓXIMO MÚLTIPLO DE 50 ======
+  const roundTo50 = (value) => {
+    if (!value || isNaN(value)) return 0;
+    return Math.ceil(value / 50) * 50;
+  };
 
+  /* =========================
+     CARRITO (LOCALSTORAGE)
+  ========================= */
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("miniBodegonCart");
+      if (raw) setCarrito(JSON.parse(raw));
+    } catch (err) {
+      console.error("Error cargando carrito", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("miniBodegonCart", JSON.stringify(carrito));
+    } catch (err) {
+      console.error("Error guardando carrito", err);
+    }
+  }, [carrito]);
+
+  const totalItemsCount = carrito.reduce((acc, it) => acc + (it.qty || 0), 0);
+
+  /* =========================
+     TASA (LOCALSTORAGE)
+  ========================= */
+  useEffect(() => {
+    try {
+      const savedRate = localStorage.getItem("bodegonRate");
+      if (savedRate) {
+        setAppliedRate(Number(savedRate));
+      } else {
+        setAppliedRate(40);
+      }
+    } catch (err) {
+      console.error("Error cargando tasa", err);
+      setAppliedRate(40);
+    }
+  }, []);
+
+  /* =========================
+     WHATSAPP
+  ========================= */
   const comprarPorWhatsApp = () => {
-    const mensaje =
-      "Hola, quiero hacer un pedido en Mini bodegOn. Quisiera información.";
+    let mensaje = "Hola, quisiera hacer un pedido en Mini bodegOn:";
+
+    if (carrito.length > 0 && appliedRate) {
+      carrito.forEach((it) => {
+        const priceBs = roundTo50(it.priceUSD * appliedRate);
+        mensaje += `\n- ${it.name} x${it.qty}: ${priceBs} Bs`;
+      });
+
+      const total = carrito.reduce(
+        (sum, it) =>
+          sum + roundTo50(it.priceUSD * appliedRate) * it.qty,
+        0
+      );
+
+      mensaje += `\n\nTotal: ${total} Bs`;
+    }
+
     window.open(
       `https://wa.me/584142316762?text=${encodeURIComponent(mensaje)}`,
       "_blank"
     );
   };
 
-  const addToCart = (product) => {
-    setCarrito((prev) => [...prev, product]);
+  /* =========================
+     CARRITO
+  ========================= */
+  const addToCart = (product, qty = 1) => {
+    if (!product?.id) return;
+
+    setCarrito((prev) => {
+      const existing = prev.find((p) => p.id === product.id);
+      if (existing) {
+        return prev.map((p) =>
+          p.id === product.id ? { ...p, qty: (p.qty || 0) + qty } : p
+        );
+      }
+
+      return [
+        ...prev,
+        {
+          id: product.id,
+          name: product.name,
+          priceUSD: product.priceUSD,
+          qty,
+        },
+      ];
+    });
   };
 
-  const fetchTasa = async () => {
-    try {
-      const { data } = await axios.get(`${API_BASE}/api/tasa`);
-      setAppliedRate(data.appliedRate.rate);
-      setBcvRate(data.bcvRate.rate);
-      setLastUpdate(data.appliedRate.date);
-    } catch (err) {
-      console.error("Error al obtener la tasa", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchTasa();
-  }, []);
-
-  /* 🔍 BÚSQUEDA GLOBAL CORRECTA */
+  /* =========================
+     BÚSQUEDA
+  ========================= */
   useEffect(() => {
     if (!busqueda.trim()) return;
 
     const search = busqueda.toLowerCase();
-
-    const categoriaEncontrada = catalogByCategory.find((cat) =>
-      cat.products.some((p) =>
-        p.name.toLowerCase().includes(search)
-      )
+    const cat = catalogByCategory.find((c) =>
+      c.products.some((p) => p.name.toLowerCase().includes(search))
     );
 
-    if (categoriaEncontrada) {
-      setCategoriaActiva(categoriaEncontrada);
-    }
+    if (cat) setCategoriaActiva(cat);
   }, [busqueda]);
 
+  /* =========================
+     UI
+  ========================= */
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-6 relative">
-      {/* TASAS */}
-      {appliedRate && bcvRate && (
-        <div className="absolute -top-2 right-2 bg-white px-3 py-2 rounded-md shadow text-[10px] text-right leading-tight">
-          <p className="text-gray-500">
-            <strong>Fecha:</strong>{" "}
-            {new Date(lastUpdate).toLocaleDateString("es-VE")}
-          </p>
-          <p className="text-gray-700">
-            <strong>Tasa BCV:</strong> {bcvRate} Bs/USD
-          </p>
-          <p className="mt-1 px-1 rounded bg-amber-100 text-amber-700 font-semibold">
-            <strong>Tasa usada:</strong> {appliedRate} Bs/USD
-          </p>
-        </div>
-      )}
+
+      {/* TASA (más grande) */}
+      <div className="absolute -top-2 right-2 bg-white px-4 py-3 rounded-md shadow text-[14px]">
+        {appliedRate !== null ? (
+          <strong style={{ fontSize: "18px" }}>
+            Tasa: {appliedRate} Bs/USD
+          </strong>
+        ) : (
+          "Cargando tasa..."
+        )}
+      </div>
 
       {/* LOGO */}
       <header className="flex justify-center mb-8 mt-10">
@@ -94,28 +149,18 @@ function App() {
         </div>
       </header>
 
-      {/* HEADER PRINCIPAL */}
+      {/* HEADER BUSQUEDA + CARRITO */}
       <div className="max-w-4xl mx-auto mb-6 bg-white rounded-xl shadow p-4 flex flex-col sm:flex-row gap-3 items-center">
         <input
           type="text"
-          placeholder="🔍 Buscar producto (ej: harina, arroz, salsa...)"
+          placeholder="🔍 Buscar producto..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          className="
-            flex-1
-            border
-            border-amber-300
-            rounded-full
-            px-4
-            py-2
-            focus:outline-none
-            focus:ring-2
-            focus:ring-amber-400
-          "
+          className="flex-1 border border-amber-300 rounded-full px-4 py-2"
         />
 
         <p className="text-xl">
-          🛒 <strong>{carrito.length}</strong>
+          🛒 <strong>{totalItemsCount}</strong>
         </p>
 
         <button
@@ -154,30 +199,30 @@ function App() {
 
       {/* PRODUCTOS */}
       {categoriaActiva && (
-        <div className="max-w-4xl mx-auto">
-          <button
-            onClick={() => {
-              setCategoriaActiva(null);
-              setBusqueda("");
-            }}
-            className="mb-4 bg-gray-300 px-4 py-2 rounded-full"
-          >
-            ⬅ Volver a categorías
-          </button>
-
-          <Catalog
-            category={categoriaActiva}
-            appliedRate={appliedRate}
-            addToCart={addToCart}
-            search={busqueda}
-          />
-        </div>
+        <Catalog
+          category={categoriaActiva}
+          appliedRate={appliedRate}
+          addToCart={addToCart}
+          onBack={() => setCategoriaActiva(null)}
+        />
       )}
 
-      {!isAdmin && <ClientAccess onLogin={() => setIsAdmin(true)} />}
+      {/* CONTROL DE ACCESO AL PIE DE LA PÁGINA */}
+      <div className="mt-10">
+        <ClientAccess
+          rate={appliedRate}
+          onRateUpdated={(newRate) => {
+            setAppliedRate(newRate);
+            try {
+              localStorage.setItem("bodegonRate", newRate);
+            } catch (err) {
+              console.error("Error guardando tasa", err);
+            }
+          }}
+        />
+      </div>
     </div>
   );
 }
 
 export default App;
-
