@@ -1,25 +1,21 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Catalog from "./components/Catalog";
 import ClientAccess from "./components/ClientAccess";
 import { catalogByCategory } from "./data/catalog";
-
-const API_BASE =
-  import.meta.env.VITE_API_URL ||
-  "https://mini-bodegon-backend-leonard.onrender.com";
 
 function App() {
   const [categoriaActiva, setCategoriaActiva] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [carrito, setCarrito] = useState([]);
   const [appliedRate, setAppliedRate] = useState(null);
-  const [bcvRate, setBcvRate] = useState(null);
-  const [lastUpdate, setLastUpdate] = useState(null);
 
-  const [isAdmin, setIsAdmin] = useState(
-    Boolean(localStorage.getItem("adminToken"))
-  );
+  // ====== REDONDEO AL PRÓXIMO MÚLTIPLO DE 50 ======
+  const roundTo50 = (value) => {
+    if (!value || isNaN(value)) return 0;
+    return Math.ceil(value / 50) * 50;
+  };
 
+<<<<<<< HEAD
   /* 🛒 AGREGAR AL CARRITO */
   const addToCart = (product) => {
     setCarrito((prev) => [...prev, product]);
@@ -44,12 +40,75 @@ function App() {
 
     const mensaje = `Hola, quiero hacer un pedido en Mini bodegOn:\n\n${lista}\n\nTotal: Bs. ${total}`;
 
+=======
+  /* =========================
+     CARRITO (LOCALSTORAGE)
+  ========================= */
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("miniBodegonCart");
+      if (raw) setCarrito(JSON.parse(raw));
+    } catch (err) {
+      console.error("Error cargando carrito", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("miniBodegonCart", JSON.stringify(carrito));
+    } catch (err) {
+      console.error("Error guardando carrito", err);
+    }
+  }, [carrito]);
+
+  const totalItemsCount = carrito.reduce((acc, it) => acc + (it.qty || 0), 0);
+
+  /* =========================
+     TASA (LOCALSTORAGE)
+  ========================= */
+  useEffect(() => {
+    try {
+      const savedRate = localStorage.getItem("bodegonRate");
+      if (savedRate) {
+        setAppliedRate(Number(savedRate));
+      } else {
+        setAppliedRate(40);
+      }
+    } catch (err) {
+      console.error("Error cargando tasa", err);
+      setAppliedRate(40);
+    }
+  }, []);
+
+  /* =========================
+     WHATSAPP
+  ========================= */
+  const comprarPorWhatsApp = () => {
+    let mensaje = "Hola, quisiera hacer un pedido en Mini bodegOn:";
+
+    if (carrito.length > 0 && appliedRate) {
+      carrito.forEach((it) => {
+        const priceBs = roundTo50(it.priceUSD * appliedRate);
+        mensaje += `\n- ${it.name} x${it.qty}: ${priceBs} Bs`;
+      });
+
+      const total = carrito.reduce(
+        (sum, it) =>
+          sum + roundTo50(it.priceUSD * appliedRate) * it.qty,
+        0
+      );
+
+      mensaje += `\n\nTotal: ${total} Bs`;
+    }
+
+>>>>>>> mi-arreglo
     window.open(
       `https://wa.me/584142316762?text=${encodeURIComponent(mensaje)}`,
       "_blank"
     );
   };
 
+<<<<<<< HEAD
   /* 💱 TASAS */
   const fetchTasa = async () => {
     try {
@@ -67,22 +126,49 @@ function App() {
   }, []);
 
   /* 🔍 BÚSQUEDA GLOBAL */
+=======
+  /* =========================
+     CARRITO
+  ========================= */
+  const addToCart = (product, qty = 1) => {
+    if (!product?.id) return;
+
+    setCarrito((prev) => {
+      const existing = prev.find((p) => p.id === product.id);
+      if (existing) {
+        return prev.map((p) =>
+          p.id === product.id ? { ...p, qty: (p.qty || 0) + qty } : p
+        );
+      }
+
+      return [
+        ...prev,
+        {
+          id: product.id,
+          name: product.name,
+          priceUSD: product.priceUSD,
+          qty,
+        },
+      ];
+    });
+  };
+
+  /* =========================
+     BÚSQUEDA
+  ========================= */
+>>>>>>> mi-arreglo
   useEffect(() => {
     if (!busqueda.trim()) return;
 
     const search = busqueda.toLowerCase();
-
-    const categoriaEncontrada = catalogByCategory.find((cat) =>
-      cat.products.some((p) =>
-        p.name.toLowerCase().includes(search)
-      )
+    const cat = catalogByCategory.find((c) =>
+      c.products.some((p) => p.name.toLowerCase().includes(search))
     );
 
-    if (categoriaEncontrada) {
-      setCategoriaActiva(categoriaEncontrada);
-    }
+    if (cat) setCategoriaActiva(cat);
   }, [busqueda]);
 
+<<<<<<< HEAD
   const enHome = !categoriaActiva;
 
   return (
@@ -113,6 +199,24 @@ function App() {
           </p>
         </div>
       )}
+=======
+  /* =========================
+     UI
+  ========================= */
+  return (
+    <div className="min-h-screen bg-gray-100 px-4 py-6 relative">
+
+      {/* TASA (más grande) */}
+      <div className="absolute -top-2 right-2 bg-white px-4 py-3 rounded-md shadow text-[14px]">
+        {appliedRate !== null ? (
+          <strong style={{ fontSize: "18px" }}>
+            Tasa: {appliedRate} Bs/USD
+          </strong>
+        ) : (
+          "Cargando tasa..."
+        )}
+      </div>
+>>>>>>> mi-arreglo
 
       {/* LOGO — SOLO HOME */}
       {enHome && (
@@ -127,19 +231,33 @@ function App() {
         </header>
       )}
 
+<<<<<<< HEAD
       {/* HEADER PRINCIPAL */}
       <div className="max-w-4xl mx-auto mb-4 bg-white rounded-xl shadow p-3 flex gap-2 items-center">
+=======
+      {/* HEADER BUSQUEDA + CARRITO */}
+      <div className="max-w-4xl mx-auto mb-6 bg-white rounded-xl shadow p-4 flex flex-col sm:flex-row gap-3 items-center">
+>>>>>>> mi-arreglo
         <input
           type="text"
           placeholder="🔍 Buscar producto..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
+<<<<<<< HEAD
           className="flex-1 border border-amber-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
         />
 
         <span className="text-sm font-semibold">
           🛒 {carrito.length}
         </span>
+=======
+          className="flex-1 border border-amber-300 rounded-full px-4 py-2"
+        />
+
+        <p className="text-xl">
+          🛒 <strong>{totalItemsCount}</strong>
+        </p>
+>>>>>>> mi-arreglo
 
         {/* BOTÓN WHATSAPP — SOLO ICONO (CORRECCIÓN) */}
         <button
@@ -183,6 +301,7 @@ function App() {
 
       {/* PRODUCTOS */}
       {categoriaActiva && (
+<<<<<<< HEAD
         <div className="max-w-4xl mx-auto">
           <button
             onClick={() => {
@@ -207,12 +326,40 @@ function App() {
       {enHome && !isAdmin && (
         <ClientAccess onLogin={() => setIsAdmin(true)} />
       )}
+=======
+        <Catalog
+          category={categoriaActiva}
+          appliedRate={appliedRate}
+          addToCart={addToCart}
+          onBack={() => setCategoriaActiva(null)}
+        />
+      )}
+
+      {/* CONTROL DE ACCESO AL PIE DE LA PÁGINA */}
+      <div className="mt-10">
+        <ClientAccess
+          rate={appliedRate}
+          onRateUpdated={(newRate) => {
+            setAppliedRate(newRate);
+            try {
+              localStorage.setItem("bodegonRate", newRate);
+            } catch (err) {
+              console.error("Error guardando tasa", err);
+            }
+          }}
+        />
+      </div>
+>>>>>>> mi-arreglo
     </div>
   );
 }
 
+<<<<<<< HEAD
 export default App;
 
 
 
 
+=======
+export default App;
+>>>>>>> mi-arreglo

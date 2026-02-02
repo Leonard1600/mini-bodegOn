@@ -1,71 +1,85 @@
-import viveres from "./categories/viveres.js"; // Importando viveres.js
-import higiene from "./categories/higiene.js"; // Importando higiene.js
-import detergentes from "./categories/detergentes.js"; // Importando detergentes.js
+import viveres from "./categories/viveres.js";
+import higiene from "./categories/higiene.js";
+import detergentes from "./categories/detergentes.js";
+import bebidas from "./categories/bebidas.js";
+import charcuteria from "./categories/charcuteria.js";
+import varios from "./categories/varios.js";
+import tabaco from "./categories/tabaco.js";
+import papeleria from "./categories/papeleria.js";
 
 export const catalogByCategory = [
   {
     id: "viveres",
     name: "Víveres",
     image: "/viveres.jpg",
-    products: viveres, // Usando los productos de viveres.js
+    products: viveres,
   },
   {
     id: "bebidas",
     name: "Bebidas",
     image: "/bebidas.png",
-    products: [],
+    products: bebidas,
   },
   {
     id: "detergentes",
     name: "Detergentes",
     image: "/detergentes.png",
-    products: detergentes, // Usando los productos de detergentes.js
+    products: detergentes,
   },
   {
     id: "charcuteria",
     name: "Charcutería",
     image: "/charcuteria.png",
-    products: [],
+    products: charcuteria,
   },
   {
     id: "confiteria",
     name: "Confitería",
     image: "/confiteria.png",
-    products: [],
+    products: [], // Aún no cargamos esta categoría
   },
   {
     id: "papeleria",
     name: "Papelería",
     image: "/papeleria.png",
-    products: [],
+    products: papeleria,
   },
   {
     id: "higiene",
     name: "Productos de higiene",
     image: "/productos de higiene.png",
-    products: higiene, // Usando los productos de higiene.js
+    products: higiene,
   },
   {
     id: "varios",
     name: "Productos varios",
     image: "/productos varios.png",
-    products: [],
+    products: varios,
   },
+
   {
-    id: "repuestos-moto",
-    name: "Repuestos de moto",
-    image: "/repuestos de moto.png",
-    products: [],
+    id: "tabaco",
+    name: "Tabaco",
+    image: "/tabaco.png",
+    products: tabaco,
   },
+
   {
     id: "helados-cali",
     name: "Helados Cali",
     image: "/helados cali.png",
-    products: [],
+    products: [], // Aún no cargamos esta categoría
+  },
+
+  // Última categoría
+  {
+    id: "repuestos-moto",
+    name: "Repuestos de moto",
+    image: "/repuestos de moto.png",
+    products: [], // Aún no cargamos esta categoría
   },
 ];
 
-// Export plano (opcional)
 const catalog = catalogByCategory.flatMap((category) =>
   category.products.map((product) => ({
     ...product,

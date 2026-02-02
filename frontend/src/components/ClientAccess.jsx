@@ -1,76 +1,70 @@
-import { useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 
-const API_BASE =
-  import.meta.env.VITE_API_URL ||
-  "https://mini-bodegon-backend-leonard.onrender.com";
-
-function ClientAccess({ onLogin }) {
+function ClientAccess({ rate, onRateUpdated }) {
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [authorized, setAuthorized] = useState(false);
+  const [newRate, setNewRate] = useState(rate);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+  // 🔐 NUEVA CONTRASEÑA
+  const correctPassword = "Angelina.1600";
 
-    try {
-      // 🔐 Validación REAL contra backend
-      await axios.post(
-        `${API_BASE}/api/tasa/manual`,
-        { rate: 1 }, // dummy, se reemplaza luego
-        {
-          headers: {
-            "x-admin-password": password,
-          },
-        }
-      );
-
-      // ✅ Contraseña válida
-      localStorage.setItem("adminToken", password);
-      onLogin();
-    } catch (err) {
-      setError("Contraseña incorrecta");
-    } finally {
-      setLoading(false);
+  const handleAccess = () => {
+    if (password === correctPassword) {
+      setAuthorized(true);
+    } else {
+      alert("Clave incorrecta");
     }
   };
 
+  const updateRate = () => {
+    if (!newRate || isNaN(newRate)) return;
+
+    onRateUpdated(Number(newRate));
+
+    alert("Tasa actualizada");
+
+    // 🔒 CERRAR ACCESO AUTOMÁTICAMENTE
+    setAuthorized(false);
+    setPassword("");
+  };
+
   return (
-    <div className="max-w-sm mx-auto bg-white p-6 rounded-xl shadow mt-10">
-      <h2 className="text-xl font-bold mb-4 text-center">
-        Acceso Cliente
-      </h2>
-
-      <form onSubmit={handleLogin} className="space-y-4">
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 border rounded-lg"
-          required
-        />
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-emerald-600 text-white py-2 rounded-lg font-semibold"
-        >
-          {loading ? "Validando..." : "Entrar"}
-        </button>
-      </form>
-
-      {error && (
-        <p className="text-red-500 text-sm mt-3 text-center">
-          {error}
-        </p>
+    <div className="max-w-4xl mx-auto mb-6 bg-white rounded-xl shadow p-4">
+      {!authorized ? (
+        <div className="flex gap-3 items-center">
+          <input
+            type="password"
+            placeholder="Clave de acceso"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="border px-3 py-2 rounded"
+          />
+          <button
+            onClick={handleAccess}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            Entrar
+          </button>
+        </div>
+      ) : (
+        <div className="flex gap-3 items-center">
+          <input
+            type="number"
+            value={newRate}
+            onChange={(e) => setNewRate(e.target.value)}
+            className="border px-3 py-2 rounded"
+          />
+          <button
+            onClick={updateRate}
+            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+          >
+            Actualizar tasa
+          </button>
+        </div>
       )}
     </div>
   );
 }
 
 export default ClientAccess;
-
 

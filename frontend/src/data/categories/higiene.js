@@ -1,41 +1,35 @@
 const higiene = [
-  // Cuidado bucal
-  { id: 1, name: "Crema Dental Alident Verde y Azul 100gr", priceUSD: 1.2, image: "/higiene/crema-dental.png" },
-  { id: 2, name: "Crema Dental Alident Verde y Azul 50gr", priceUSD: 0.7, image: "/higiene/crema-dental.png" },
-  { id: 3, name: "Crema Dental Colgate 90gr", priceUSD: 1.5, image: "/higiene/crema-dental.png" },
+  { id: "hig-001", name: "Crema Dental Alident Verde/Azul 100gr", priceUSD: 1.52, image: "" },
+  { id: "hig-002", name: "Crema Dental Alident Verde/Azul 50gr", priceUSD: 0.59, image: "" },
+  { id: "hig-003", name: "Crema Dental Colgate 90gr", priceUSD: 1.53, image: "" },
 
-  // Cabello
-  { id: 4, name: "Gel para Cabello 120gr", priceUSD: 1.0, image: "/higiene/gel-cabello.png" },
-  { id: 5, name: "Shampoo Pantene Sobre", priceUSD: 0.9, image: "/higiene/shampoo.png" },
-  { id: 6, name: "Shampoo Head & Shoulders Sobre", priceUSD: 1.0, image: "/higiene/shampoo.png" },
-  { id: 7, name: "Nutribella Sobre", priceUSD: 0.8, image: "/higiene/tratamiento-capilar.png" },
+  { id: "hig-004", name: "Gel para Cabello 120gr", priceUSD: 3.30, image: "" },
 
-  // Afeitado
-  { id: 8, name: "Hojilla Paquete", priceUSD: 1.3, image: "/higiene/hojilla.png" },
-  { id: 9, name: "Hojilla Unidad", priceUSD: 0.4, image: "/higiene/hojilla.png" },
+  { id: "hig-005", name: "Hojilla (paquete)", priceUSD: 0.78, image: "" },
+  { id: "hig-006", name: "Lisso Inteligente (sobre)", priceUSD: 0.51, image: "" },
 
-  // Higiene personal
-  { id: 10, name: "Cepillo de Dientes Cobor Unidad", priceUSD: 0.9, image: "/higiene/cepillo-diente.png" },
-  { id: 11, name: "Desodorante Lady Speed Stick Caballero Sobre", priceUSD: 1.1, image: "/higiene/desodorante.png" },
-  { id: 12, name: "Desodorante Lady Speed Stick Dama Sobre", priceUSD: 1.1, image: "/higiene/desodorante.png" },
-  { id: 13, name: "Lisso Inteligente Sobre", priceUSD: 0.9, image: "/higiene/alisador.png" },
+  { id: "hig-007", name: "Cepillo de Dientes Cobor (unidad)", priceUSD: 0.30, image: "" },
 
-  // Higiene femenina
-  { id: 14, name: "Toallas Sanitarias Wanita Día", priceUSD: 1.2, image: "/higiene/toallas.png" },
-  { id: 15, name: "Toallas Sanitarias Wanita Noche", priceUSD: 1.3, image: "/higiene/toallas.png" },
+  { id: "hig-008", name: "Shampoo Pantene/Head & Shoulders (sobre)", priceUSD: 0.75, image: "" },
 
-  // Bebés
-  { id: 16, name: "Pañal Baby Finger 16und Talla XG", priceUSD: 6.5, image: "/higiene/panales.png" },
-  { id: 17, name: "Pañal Baby Finger 18und Talla G", priceUSD: 6.0, image: "/higiene/panales.png" },
-  { id: 18, name: "Pañal Baby Finger 18und Talla M", priceUSD: 5.8, image: "/higiene/panales.png" },
-  { id: 19, name: "Pañal Detallado", priceUSD: 0.4, image: "/higiene/panal.png" },
+  { id: "hig-009", name: "Desodorante Lady Speed Stick Caballero (sobre)", priceUSD: 0.51, image: "" },
+  { id: "hig-010", name: "Desodorante Lady Speed Stick Dama (sobre)", priceUSD: 0.51, image: "" },
 
-  // Jabones
-  { id: 20, name: "Jabón Harmony", priceUSD: 0.9, image: "/higiene/jabon.png" },
-  { id: 21, name: "Jabón Anita", priceUSD: 0.8, image: "/higiene/jabon.png" },
+  { id: "hig-011", name: "Nutribella (sobre)", priceUSD: 1.09, image: "" },
 
-  // Otros
-  { id: 22, name: "Condones Dúo Paquete 3und", priceUSD: 2.4, image: "/higiene/condones.png" },
+  { id: "hig-012", name: "Toallas Sanitarias Wanita Día", priceUSD: 1.05, image: "" },
+  { id: "hig-013", name: "Toallas Sanitarias Wanita Noche", priceUSD: 1.77, image: "" },
+
+  { id: "hig-014", name: "Pañal Baby Finger 16und Talla XG", priceUSD: 6.20, image: "" },
+  { id: "hig-015", name: "Pañal Baby Finger 18und Talla G", priceUSD: 4.91, image: "" },
+  { id: "hig-016", name: "Pañal Baby Finger 18und Talla M", priceUSD: 4.97, image: "" },
+
+  { id: "hig-017", name: "Pañal Detallado (unidad)", priceUSD: 0.52, image: "" },
+
+  { id: "hig-018", name: "Jabón Harmony", priceUSD: 0.60, image: "" },
+  { id: "hig-019", name: "Jabón Anita", priceUSD: 0.86, image: "" },
+
+  { id: "hig-020", name: "Condones Dúo PQ 3und", priceUSD: 0.43, image: "" },
 ];
 
 export default higiene;
