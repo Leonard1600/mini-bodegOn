@@ -99,17 +99,28 @@ function App() {
     );
   };
 
+  /* =========================
+     BÚSQUEDA MEJORADA
+  ========================= */
   useEffect(() => {
     if (!busqueda.trim()) return;
 
     const search = busqueda.toLowerCase();
+
     const cat = catalogByCategory.find((c) =>
       c.products.some((p) =>
         p.name.toLowerCase().includes(search)
       )
     );
 
-    if (cat) setCategoriaActiva(cat);
+    if (cat) {
+      setCategoriaActiva({
+        ...cat,
+        products: cat.products.filter((p) =>
+          p.name.toLowerCase().includes(search)
+        ),
+      });
+    }
   }, [busqueda]);
 
   const enHome = !categoriaActiva;
@@ -118,7 +129,7 @@ function App() {
     <div className="min-h-screen bg-gray-100 px-3 py-4 relative">
 
       {/* TASA — SUBIDA PARA QUE NO CHOQUE */}
-      <div className="absolute top-1 right-3 sm:top-3">
+      <div className="absolute top-0 right-3 sm:top-2">
         <div className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold shadow-sm border border-green-300">
           {appliedRate !== null ? `Tasa: ${appliedRate} Bs/USD` : "Cargando..."}
         </div>
@@ -138,8 +149,11 @@ function App() {
       )}
 
       {/* BUSQUEDA + CARRITO + WHATSAPP + VACIAR */}
-      <div className="max-w-4xl mx-auto mb-4 bg-white rounded-xl shadow p-3 flex items-center justify-center gap-2">
-
+      <div
+        className={`max-w-4xl mx-auto mb-4 bg-white rounded-xl shadow p-3 flex items-center justify-center gap-2 ${
+          !enHome ? "mt-6" : ""
+        }`}
+      >
         <input
           type="text"
           placeholder="🔍 Buscar..."
@@ -148,7 +162,6 @@ function App() {
           className="flex-1 max-w-[180px] border border-amber-300 rounded-full px-3 py-2 text-sm"
         />
 
-        {/* BOTÓN VACIAR — SOLO ÍCONO */}
         <button
           onClick={vaciarCarrito}
           className="w-8 h-8 flex items-center justify-center bg-red-100 text-red-600 rounded-full border border-red-300"
@@ -161,7 +174,6 @@ function App() {
           🛒 <strong>{totalItemsCount}</strong>
         </p>
 
-        {/* WHATSAPP MÁS PEQUEÑO */}
         <button
           onClick={comprarPorWhatsApp}
           className="w-10 h-10 flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded-full"
