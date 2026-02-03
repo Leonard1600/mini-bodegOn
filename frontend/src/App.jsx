@@ -9,17 +9,11 @@ function App() {
   const [carrito, setCarrito] = useState([]);
   const [appliedRate, setAppliedRate] = useState(null);
 
-  /* =========================
-     REDONDEO A MÚLTIPLO DE 50
-  ========================= */
   const roundTo50 = (value) => {
     if (!value || isNaN(value)) return 0;
     return Math.ceil(value / 50) * 50;
   };
 
-  /* =========================
-     CARRITO (LOCALSTORAGE)
-  ========================= */
   useEffect(() => {
     try {
       const raw = localStorage.getItem("miniBodegonCart");
@@ -44,9 +38,6 @@ function App() {
 
   const vaciarCarrito = () => setCarrito([]);
 
-  /* =========================
-     TASA (LOCALSTORAGE)
-  ========================= */
   useEffect(() => {
     try {
       const savedRate = localStorage.getItem("bodegonRate");
@@ -61,9 +52,6 @@ function App() {
     }
   }, []);
 
-  /* =========================
-     AGREGAR AL CARRITO
-  ========================= */
   const addToCart = (product, qty = 1) => {
     if (!product?.id) return;
 
@@ -87,9 +75,6 @@ function App() {
     });
   };
 
-  /* =========================
-     WHATSAPP
-  ========================= */
   const comprarPorWhatsApp = () => {
     let mensaje = "Hola, quisiera hacer un pedido en Mini bodegOn:";
 
@@ -114,9 +99,6 @@ function App() {
     );
   };
 
-  /* =========================
-     BÚSQUEDA GLOBAL
-  ========================= */
   useEffect(() => {
     if (!busqueda.trim()) return;
 
@@ -132,14 +114,11 @@ function App() {
 
   const enHome = !categoriaActiva;
 
-  /* =========================
-     UI
-  ========================= */
   return (
     <div className="min-h-screen bg-gray-100 px-3 py-4 relative">
 
-      {/* TASA — pequeña, verde, ovalada */}
-      <div className="absolute top-3 right-3">
+      {/* TASA — SUBIDA PARA QUE NO CHOQUE */}
+      <div className="absolute top-1 right-3 sm:top-3">
         <div className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold shadow-sm border border-green-300">
           {appliedRate !== null ? `Tasa: ${appliedRate} Bs/USD` : "Cargando..."}
         </div>
@@ -159,36 +138,39 @@ function App() {
       )}
 
       {/* BUSQUEDA + CARRITO + WHATSAPP + VACIAR */}
-      <div className="max-w-4xl mx-auto mb-4 bg-white rounded-xl shadow p-3 flex items-center justify-center gap-3">
+      <div className="max-w-4xl mx-auto mb-4 bg-white rounded-xl shadow p-3 flex items-center justify-center gap-2">
 
         <input
           type="text"
           placeholder="🔍 Buscar..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          className="flex-1 max-w-[260px] border border-amber-300 rounded-full px-4 py-2 text-sm"
+          className="flex-1 max-w-[180px] border border-amber-300 rounded-full px-3 py-2 text-sm"
         />
 
+        {/* BOTÓN VACIAR — SOLO ÍCONO */}
         <button
           onClick={vaciarCarrito}
-          className="text-xs bg-red-100 text-red-600 px-3 py-1 rounded-full border border-red-300"
+          className="w-8 h-8 flex items-center justify-center bg-red-100 text-red-600 rounded-full border border-red-300"
+          title="Vaciar carrito"
         >
-          Vaciar
+          🗑️
         </button>
 
         <p className="text-lg">
           🛒 <strong>{totalItemsCount}</strong>
         </p>
 
+        {/* WHATSAPP MÁS PEQUEÑO */}
         <button
           onClick={comprarPorWhatsApp}
-          className="w-12 h-12 flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded-full"
+          className="w-10 h-10 flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded-full"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 32 32"
             fill="currentColor"
-            className="w-6 h-6"
+            className="w-5 h-5"
           >
             <path d="M16 2C8.3 2 2 8.1 2 15.6c0 2.7.8 5.3 2.4 7.5L2 30l7-2.3c2.1 1.1 4.5 1.7 7 1.7 7.7 0 14-6.1 14-13.8S23.7 2 16 2zm0 24.9c-2.2 0-4.3-.6-6.1-1.6l-.4-.2-4.1 1.3 1.4-4-.3-.4c-1.3-1.9-2-4.1-2-6.4C4.5 9.3 9.7 4.3 16 4.3S27.5 9.3 27.5 15.6 22.3 26.9 16 26.9z"/>
           </svg>
@@ -228,7 +210,7 @@ function App() {
         />
       )}
 
-      {/* ⭐ PAGO MÓVIL — elegante y moderno */}
+      {/* PAGO MÓVIL */}
       <div className="max-w-md mx-auto mt-10 mb-6">
         <div className="bg-blue-50 border border-blue-200 rounded-2xl shadow-md p-6 text-center">
           <h3 className="text-lg font-semibold text-blue-700 mb-3">
