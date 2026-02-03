@@ -42,6 +42,8 @@ function App() {
     0
   );
 
+  const vaciarCarrito = () => setCarrito([]);
+
   /* =========================
      TASA (LOCALSTORAGE)
   ========================= */
@@ -134,23 +136,19 @@ function App() {
      UI
   ========================= */
   return (
-    <div className="min-h-screen bg-gray-100 px-4 py-6 relative">
+    <div className="min-h-screen bg-gray-100 px-3 py-4 relative">
 
-      {/* TASA */}
-      <div className="absolute -top-2 right-2 bg-white px-4 py-3 rounded-md shadow text-[14px]">
-        {appliedRate !== null ? (
-          <strong style={{ fontSize: "18px" }}>
-            Tasa: {appliedRate} Bs/USD
-          </strong>
-        ) : (
-          "Cargando tasa..."
-        )}
+      {/* TASA — pequeña, verde, ovalada */}
+      <div className="absolute top-3 right-3">
+        <div className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold shadow-sm border border-green-300">
+          {appliedRate !== null ? `Tasa: ${appliedRate} Bs/USD` : "Cargando..."}
+        </div>
       </div>
 
       {/* LOGO */}
       {enHome && (
         <header className="flex justify-center mb-6 mt-10">
-          <div className="w-[720px] h-[180px] rounded-full overflow-hidden bg-white shadow">
+          <div className="w-full max-w-[420px] h-[120px] rounded-full overflow-hidden bg-white shadow">
             <img
               src="/logo.png"
               alt="Mini bodegOn"
@@ -160,29 +158,37 @@ function App() {
         </header>
       )}
 
-      {/* BUSQUEDA + CARRITO */}
-      <div className="max-w-4xl mx-auto mb-6 bg-white rounded-xl shadow p-4 flex flex-col sm:flex-row gap-3 items-center">
+      {/* BUSQUEDA + CARRITO + WHATSAPP + VACIAR */}
+      <div className="max-w-4xl mx-auto mb-4 bg-white rounded-xl shadow p-3 flex items-center justify-center gap-3">
+
         <input
           type="text"
-          placeholder="🔍 Buscar producto..."
+          placeholder="🔍 Buscar..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          className="flex-1 border border-amber-300 rounded-full px-4 py-2"
+          className="flex-1 max-w-[260px] border border-amber-300 rounded-full px-4 py-2 text-sm"
         />
 
-        <p className="text-xl">
+        <button
+          onClick={vaciarCarrito}
+          className="text-xs bg-red-100 text-red-600 px-3 py-1 rounded-full border border-red-300"
+        >
+          Vaciar
+        </button>
+
+        <p className="text-lg">
           🛒 <strong>{totalItemsCount}</strong>
         </p>
 
         <button
           onClick={comprarPorWhatsApp}
-          className="w-10 h-10 flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded-full shrink-0"
+          className="w-12 h-12 flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded-full"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 32 32"
             fill="currentColor"
-            className="w-5 h-5"
+            className="w-6 h-6"
           >
             <path d="M16 2C8.3 2 2 8.1 2 15.6c0 2.7.8 5.3 2.4 7.5L2 30l7-2.3c2.1 1.1 4.5 1.7 7 1.7 7.7 0 14-6.1 14-13.8S23.7 2 16 2zm0 24.9c-2.2 0-4.3-.6-6.1-1.6l-.4-.2-4.1 1.3 1.4-4-.3-.4c-1.3-1.9-2-4.1-2-6.4C4.5 9.3 9.7 4.3 16 4.3S27.5 9.3 27.5 15.6 22.3 26.9 16 26.9z"/>
           </svg>
@@ -222,8 +228,27 @@ function App() {
         />
       )}
 
+      {/* ⭐ PAGO MÓVIL — elegante y moderno */}
+      <div className="max-w-md mx-auto mt-10 mb-6">
+        <div className="bg-blue-50 border border-blue-200 rounded-2xl shadow-md p-6 text-center">
+          <h3 className="text-lg font-semibold text-blue-700 mb-3">
+            Pago Móvil
+          </h3>
+
+          <p className="text-sm text-blue-800 font-medium">
+            <strong>C.I:</strong> 21.124.901
+          </p>
+          <p className="text-sm text-blue-800 font-medium">
+            <strong>Teléfono:</strong> 0412-7232455
+          </p>
+          <p className="text-sm text-blue-800 font-medium">
+            <strong>Banco:</strong> 0102 — Banco de Venezuela
+          </p>
+        </div>
+      </div>
+
       {/* CONTROL DE ACCESO */}
-      <div className="mt-10">
+      <div className="mt-6 mb-10">
         <ClientAccess
           rate={appliedRate}
           onRateUpdated={(newRate) => {

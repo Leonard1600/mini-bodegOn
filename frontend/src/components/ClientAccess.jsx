@@ -5,7 +5,7 @@ function ClientAccess({ rate, onRateUpdated }) {
   const [authorized, setAuthorized] = useState(false);
   const [newRate, setNewRate] = useState(rate);
 
-  // 🔐 NUEVA CONTRASEÑA
+  // 🔐 CONTRASEÑA
   const correctPassword = "Angelina.1600";
 
   const handleAccess = () => {
@@ -20,51 +20,61 @@ function ClientAccess({ rate, onRateUpdated }) {
     if (!newRate || isNaN(newRate)) return;
 
     onRateUpdated(Number(newRate));
-
     alert("Tasa actualizada");
 
-    // 🔒 CERRAR ACCESO AUTOMÁTICAMENTE
     setAuthorized(false);
     setPassword("");
   };
 
   return (
-    <div className="max-w-4xl mx-auto mb-6 bg-white rounded-xl shadow p-4">
-      {!authorized ? (
-        <div className="flex gap-3 items-center">
-          <input
-            type="password"
-            placeholder="Clave de acceso"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border px-3 py-2 rounded"
-          />
-          <button
-            onClick={handleAccess}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            Entrar
-          </button>
-        </div>
-      ) : (
-        <div className="flex gap-3 items-center">
-          <input
-            type="number"
-            value={newRate}
-            onChange={(e) => setNewRate(e.target.value)}
-            className="border px-3 py-2 rounded"
-          />
-          <button
-            onClick={updateRate}
-            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-          >
-            Actualizar tasa
-          </button>
-        </div>
-      )}
+    <div className="max-w-md mx-auto mt-10">
+      <div className="bg-green-50 border border-green-200 rounded-2xl shadow-md p-6 text-center">
+
+        <h3 className="text-lg font-semibold text-green-700 mb-4">
+          Acceso de Administrador
+        </h3>
+
+        {!authorized ? (
+          <div className="flex flex-col items-center gap-3">
+
+            <input
+              type="password"
+              placeholder="Clave de acceso"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full border border-green-300 px-4 py-2 rounded-full focus:ring-2 focus:ring-green-400 outline-none"
+            />
+
+            <button
+              onClick={handleAccess}
+              className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-full transition"
+            >
+              Entrar
+            </button>
+
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-3 animate-fadeIn">
+
+            <input
+              type="number"
+              value={newRate}
+              onChange={(e) => setNewRate(e.target.value)}
+              className="w-full border border-green-300 px-4 py-2 rounded-full focus:ring-2 focus:ring-green-400 outline-none"
+            />
+
+            <button
+              onClick={updateRate}
+              className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-full transition"
+            >
+              Actualizar tasa
+            </button>
+
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
 export default ClientAccess;
-
