@@ -122,10 +122,13 @@ function App() {
   };
 
   /* =========================
-     BÚSQUEDA GLOBAL
+     BÚSQUEDA GLOBAL (CORREGIDA)
   ========================= */
   useEffect(() => {
-    if (!busqueda.trim()) return;
+    if (!busqueda.trim()) {
+      setCategoriaActiva(null); // 🔥 vuelve al home
+      return;
+    }
 
     const search = busqueda.toLowerCase();
 
@@ -265,40 +268,38 @@ function App() {
 
       {/* CONTROL DE ACCESO */}
       <div className="mt-6 mb-10">
-       <ClientAccess
-  rate={appliedRate}
-  onRateUpdated={(newRate) => {
-    setAppliedRate(newRate);
+        <ClientAccess
+          rate={appliedRate}
+          onRateUpdated={(newRate) => {
+            setAppliedRate(newRate);
 
-    try {
-      localStorage.setItem("bodegonRate", newRate);
+            try {
+              localStorage.setItem("bodegonRate", newRate);
 
-      const url = new URL(window.location.href);
-      url.searchParams.set("rate", newRate);
-      window.history.replaceState({}, "", url.toString());
+              const url = new URL(window.location.href);
+              url.searchParams.set("rate", newRate);
+              window.history.replaceState({}, "", url.toString());
 
-      // SIEMPRE mostrar el enlace
-      const mensaje = `Enlace actualizado:\n\n${url.toString()}`;
+              const mensaje = `Enlace actualizado:\n\n${url.toString()}`;
 
-      // Intentar copiar
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard
-          .writeText(url.toString())
-          .then(() => {
-            alert(mensaje + "\n\n(Copiado automáticamente)");
-          })
-          .catch(() => {
-            alert(mensaje + "\n\n(Copia manualmente)");
-          });
-      } else {
-        alert(mensaje + "\n\n(Copia manualmente)");
-      }
-    } catch (err) {
-      console.error("Error guardando tasa", err);
-      alert("Hubo un problema actualizando la tasa.");
-    }
-  }}
-/>
+              if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard
+                  .writeText(url.toString())
+                  .then(() => {
+                    alert(mensaje + "\n\n(Copiado automáticamente)");
+                  })
+                  .catch(() => {
+                    alert(mensaje + "\n\n(Copia manualmente)");
+                  });
+              } else {
+                alert(mensaje + "\n\n(Copia manualmente)");
+              }
+            } catch (err) {
+              console.error("Error guardando tasa", err);
+              alert("Hubo un problema actualizando la tasa.");
+            }
+          }}
+        />
       </div>
     </div>
   );

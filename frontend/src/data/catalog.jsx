@@ -7,6 +7,10 @@ import varios from "./categories/varios.js";
 import tabaco from "./categories/tabaco.js";
 import papeleria from "./categories/papeleria.js";
 
+// Nuevas categorías
+import confiteria from "./categories/confiteria.js";
+import helados from "./categories/helados.js";
+
 export const catalogByCategory = [
   {
     id: "viveres",
@@ -20,6 +24,21 @@ export const catalogByCategory = [
     image: "/bebidas.png",
     products: bebidas,
   },
+
+  // 🔥 Movidas aquí
+  {
+    id: "confiteria",
+    name: "Confitería",
+    image: "/confiteria.png",
+    products: confiteria,
+  },
+  {
+    id: "helados-cali",
+    name: "Helados Cali",
+    image: "/helados cali.png",
+    products: helados,
+  },
+
   {
     id: "detergentes",
     name: "Detergentes",
@@ -31,12 +50,6 @@ export const catalogByCategory = [
     name: "Charcutería",
     image: "/charcuteria.png",
     products: charcuteria,
-  },
-  {
-    id: "confiteria",
-    name: "Confitería",
-    image: "/confiteria.png",
-    products: [], // Aún no cargamos esta categoría
   },
   {
     id: "papeleria",
@@ -56,7 +69,6 @@ export const catalogByCategory = [
     image: "/productos varios.png",
     products: varios,
   },
-
   {
     id: "tabaco",
     name: "Tabaco",
@@ -64,19 +76,12 @@ export const catalogByCategory = [
     products: tabaco,
   },
 
-  {
-    id: "helados-cali",
-    name: "Helados Cali",
-    image: "/helados cali.png",
-    products: [], // Aún no cargamos esta categoría
-  },
-
   // Última categoría
   {
     id: "repuestos-moto",
     name: "Repuestos de moto",
     image: "/repuestos de moto.png",
-    products: [], // Aún no cargamos esta categoría
+    products: [],
   },
 ];
 
