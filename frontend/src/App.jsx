@@ -14,6 +14,9 @@ function App() {
     return Math.ceil(value / 50) * 50;
   };
 
+  /* =========================
+     CARGAR CARRITO
+  ========================= */
   useEffect(() => {
     try {
       const raw = localStorage.getItem("miniBodegonCart");
@@ -38,8 +41,21 @@ function App() {
 
   const vaciarCarrito = () => setCarrito([]);
 
+  /* =========================
+     CARGAR TASA DESDE URL O LOCALSTORAGE
+  ========================= */
   useEffect(() => {
     try {
+      const params = new URLSearchParams(window.location.search);
+      const urlRate = params.get("rate");
+
+      if (urlRate && !isNaN(urlRate)) {
+        const parsed = Number(urlRate);
+        setAppliedRate(parsed);
+        localStorage.setItem("bodegonRate", parsed);
+        return;
+      }
+
       const savedRate = localStorage.getItem("bodegonRate");
       if (savedRate) {
         setAppliedRate(Number(savedRate));
@@ -52,6 +68,9 @@ function App() {
     }
   }, []);
 
+  /* =========================
+     AGREGAR AL CARRITO
+  ========================= */
   const addToCart = (product, qty = 1) => {
     if (!product?.id) return;
 
@@ -75,6 +94,9 @@ function App() {
     });
   };
 
+  /* =========================
+     WHATSAPP
+  ========================= */
   const comprarPorWhatsApp = () => {
     let mensaje = "Hola, quisiera hacer un pedido en Mini bodegOn:";
 
@@ -100,7 +122,7 @@ function App() {
   };
 
   /* =========================
-     BÚSQUEDA MEJORADA
+     BÚSQUEDA GLOBAL
   ========================= */
   useEffect(() => {
     if (!busqueda.trim()) return;
@@ -128,7 +150,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-100 px-3 py-4 relative">
 
-      {/* TASA — SUBIDA PARA QUE NO CHOQUE */}
+      {/* TASA */}
       <div className="absolute top-0 right-3 sm:top-2">
         <div className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold shadow-sm border border-green-300">
           {appliedRate !== null ? `Tasa: ${appliedRate} Bs/USD` : "Cargando..."}
@@ -148,7 +170,7 @@ function App() {
         </header>
       )}
 
-      {/* BUSQUEDA + CARRITO + WHATSAPP + VACIAR */}
+      {/* BUSQUEDA + CARRITO + WHATSAPP */}
       <div
         className={`max-w-4xl mx-auto mb-4 bg-white rounded-xl shadow p-3 flex items-center justify-center gap-2 ${
           !enHome ? "mt-6" : ""
@@ -243,17 +265,40 @@ function App() {
 
       {/* CONTROL DE ACCESO */}
       <div className="mt-6 mb-10">
-        <ClientAccess
-          rate={appliedRate}
-          onRateUpdated={(newRate) => {
-            setAppliedRate(newRate);
-            try {
-              localStorage.setItem("bodegonRate", newRate);
-            } catch (err) {
-              console.error("Error guardando tasa", err);
-            }
-          }}
-        />
+       <ClientAccess
+  rate={appliedRate}
+  onRateUpdated={(newRate) => {
+    setAppliedRate(newRate);
+
+    try {
+      localStorage.setItem("bodegonRate", newRate);
+
+      const url = new URL(window.location.href);
+      url.searchParams.set("rate", newRate);
+      window.history.replaceState({}, "", url.toString());
+
+      // SIEMPRE mostrar el enlace
+      const mensaje = `Enlace actualizado:\n\n${url.toString()}`;
+
+      // Intentar copiar
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard
+          .writeText(url.toString())
+          .then(() => {
+            alert(mensaje + "\n\n(Copiado automáticamente)");
+          })
+          .catch(() => {
+            alert(mensaje + "\n\n(Copia manualmente)");
+          });
+      } else {
+        alert(mensaje + "\n\n(Copia manualmente)");
+      }
+    } catch (err) {
+      console.error("Error guardando tasa", err);
+      alert("Hubo un problema actualizando la tasa.");
+    }
+  }}
+/>
       </div>
     </div>
   );

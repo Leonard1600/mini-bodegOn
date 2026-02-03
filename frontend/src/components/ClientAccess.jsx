@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function ClientAccess({ rate, onRateUpdated }) {
   const [password, setPassword] = useState("");
@@ -7,6 +7,11 @@ function ClientAccess({ rate, onRateUpdated }) {
 
   // 🔐 CONTRASEÑA
   const correctPassword = "Angelina.1600";
+
+  // Mantener sincronizado el input cuando cambia la tasa desde afuera
+  useEffect(() => {
+    setNewRate(rate);
+  }, [rate]);
 
   const handleAccess = () => {
     if (password === correctPassword) {
@@ -20,8 +25,8 @@ function ClientAccess({ rate, onRateUpdated }) {
     if (!newRate || isNaN(newRate)) return;
 
     onRateUpdated(Number(newRate));
-    alert("Tasa actualizada");
 
+    // Cerrar panel y limpiar
     setAuthorized(false);
     setPassword("");
   };
