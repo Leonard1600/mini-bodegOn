@@ -122,11 +122,11 @@ function App() {
   };
 
   /* =========================
-     BÚSQUEDA GLOBAL (CORREGIDA)
+     BÚSQUEDA GLOBAL
   ========================= */
   useEffect(() => {
     if (!busqueda.trim()) {
-      setCategoriaActiva(null); // 🔥 vuelve al home
+      setCategoriaActiva(null);
       return;
     }
 
@@ -163,7 +163,7 @@ function App() {
       {/* LOGO */}
       {enHome && (
         <header className="flex justify-center mb-6 mt-10">
-          <div className="w-full max-w-[420px] h-[120px] rounded-full overflow-hidden bg-white shadow">
+          <div className="w-full max-w-[420px] h-[140px] rounded-full overflow-hidden bg-white shadow">
             <img
               src="/logo.png"
               alt="Mini bodegOn"
@@ -209,7 +209,7 @@ function App() {
             fill="currentColor"
             className="w-5 h-5"
           >
-            <path d="M16 2C8.3 2 2 8.1 2 15.6c0 2.7.8 5.3 2.4 7.5L2 30l7-2.3c2.1 1.1 4.5 1.7 7 1.7 7.7 0 14-6.1 14-13.8S23.7 2 16 2zm0 24.9c-2.2 0-4.3-.6-6.1-1.6l-.4-.2-4.1 1.3 1.4-4-.3-.4c-1.3-1.9-2-4.1-2-6.4C4.5 9.3 9.7 4.3 16 4.3S27.5 9.3 27.5 15.6 22.3 26.9 16 26.9z"/>
+            <path d="M16 2C8.3 2 2 8.1 2 15.6c0 2.7.8 5.3 2.4 7.5L2 30l7-2.3c2.1 1.1 4.5 1.7 7 1.7 7.7 0 14-6.1 14-13.8S23.7 2 16 2z"/>
           </svg>
         </button>
       </div>
@@ -253,16 +253,9 @@ function App() {
           <h3 className="text-lg font-semibold text-blue-700 mb-3">
             Pago Móvil
           </h3>
-
-          <p className="text-sm text-blue-800 font-medium">
-            <strong>C.I:</strong> 21.124.901
-          </p>
-          <p className="text-sm text-blue-800 font-medium">
-            <strong>Teléfono:</strong> 0412-7232455
-          </p>
-          <p className="text-sm text-blue-800 font-medium">
-            <strong>Banco:</strong> 0102 — Banco de Venezuela
-          </p>
+          <p className="text-sm text-blue-800 font-medium"><strong>C.I:</strong> 21.124.901</p>
+          <p className="text-sm text-blue-800 font-medium"><strong>Teléfono:</strong> 0412-7232455</p>
+          <p className="text-sm text-blue-800 font-medium"><strong>Banco:</strong> 0102 — Banco de Venezuela</p>
         </div>
       </div>
 
@@ -272,32 +265,7 @@ function App() {
           rate={appliedRate}
           onRateUpdated={(newRate) => {
             setAppliedRate(newRate);
-
-            try {
-              localStorage.setItem("bodegonRate", newRate);
-
-              const url = new URL(window.location.href);
-              url.searchParams.set("rate", newRate);
-              window.history.replaceState({}, "", url.toString());
-
-              const mensaje = `Enlace actualizado:\n\n${url.toString()}`;
-
-              if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard
-                  .writeText(url.toString())
-                  .then(() => {
-                    alert(mensaje + "\n\n(Copiado automáticamente)");
-                  })
-                  .catch(() => {
-                    alert(mensaje + "\n\n(Copia manualmente)");
-                  });
-              } else {
-                alert(mensaje + "\n\n(Copia manualmente)");
-              }
-            } catch (err) {
-              console.error("Error guardando tasa", err);
-              alert("Hubo un problema actualizando la tasa.");
-            }
+            localStorage.setItem("bodegonRate", newRate);
           }}
         />
       </div>
