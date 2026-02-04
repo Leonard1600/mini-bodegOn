@@ -39,7 +39,7 @@ function Catalog({ category, appliedRate, addToCart, onBack }) {
               <img
                 src={imageSrc}
                 alt={product.name}
-                className="w-20 h-20 object-contain mb-2"
+                className="w-full h-32 object-contain mb-2"
                 loading="lazy"
                 onError={(e) => {
                   e.target.src = "/images/no-image.png"; // fallback opcional
@@ -77,4 +77,3 @@ function Catalog({ category, appliedRate, addToCart, onBack }) {
 }
 
 export default Catalog;
-
