@@ -39,10 +39,10 @@ function Catalog({ category, appliedRate, addToCart, onBack }) {
               <img
                 src={imageSrc}
                 alt={product.name}
-                className="w-full h-32 object-contain mb-2"
+                className="w-full h-40 object-cover rounded-md mb-2"
                 loading="lazy"
                 onError={(e) => {
-                  e.target.src = "/images/no-image.png"; // fallback opcional
+                  e.target.src = "/images/no-image.png";
                 }}
               />
 
@@ -64,7 +64,7 @@ function Catalog({ category, appliedRate, addToCart, onBack }) {
               {/* BOTÓN AGREGAR */}
               <button
                 onClick={() => addToCart(product)}
-                className="mt-2 bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-full text-xs"
+                className="mt-2 bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded-full text-xs transition"
               >
                 Agregar
               </button>
