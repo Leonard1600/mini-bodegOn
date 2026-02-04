@@ -196,9 +196,13 @@ function App() {
           🛒 <strong>{totalItemsCount}</strong>
         </button>
 
+        {/* BOTÓN WHATSAPP MEJORADO */}
         <button
           onClick={comprarPorWhatsApp}
-          className="w-10 h-10 flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded-full"
+          className="w-10 h-10 flex items-center justify-center 
+                     bg-green-500 hover:bg-green-600 
+                     text-white rounded-full shadow-md 
+                     transition-all active:scale-95"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -311,8 +315,35 @@ function App() {
           <p className="text-sm text-blue-800 font-medium"><strong>C.I:</strong> 21.124.901</p>
           <p className="text-sm text-blue-800 font-medium"><strong>Teléfono:</strong> 0412-7232455</p>
           <p className="text-sm text-blue-800 font-medium"><strong>Banco:</strong> 0102 — Banco de Venezuela</p>
+
+          {/* HORARIO CORREGIDO */}
+          <p className="text-sm text-blue-800 font-medium mt-2">
+            <strong>Horario:</strong> 7:00 AM — 10:00 PM
+          </p>
         </div>
       </div>
+
+      {/* BOTÓN FLOTANTE DE WHATSAPP */}
+      <button
+        onClick={comprarPorWhatsApp}
+        className="
+          fixed bottom-6 right-6 z-50
+          w-14 h-14 rounded-full
+          bg-green-500 hover:bg-green-600
+          shadow-xl text-white
+          flex items-center justify-center
+          transition-all active:scale-95
+        "
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 32 32"
+          fill="currentColor"
+          className="w-7 h-7"
+        >
+          <path d="M16 2C8.3 2 2 8.1 2 15.6c0 2.7.8 5.3 2.4 7.5L2 30l7-2.3c2.1 1.1 4.5 1.7 7 1.7 7.7 0 14-6.1 14-13.8S23.7 2 16 2z"/>
+        </svg>
+      </button>
 
       {/* CONTROL DE ACCESO */}
       <div className="mt-6 mb-10">
