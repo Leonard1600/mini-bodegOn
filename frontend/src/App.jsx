@@ -8,6 +8,7 @@ function App() {
   const [busqueda, setBusqueda] = useState("");
   const [carrito, setCarrito] = useState([]);
   const [appliedRate, setAppliedRate] = useState(null);
+  const [mostrarCarrito, setMostrarCarrito] = useState(false);
 
   const roundTo50 = (value) => {
     if (!value || isNaN(value)) return 0;
@@ -42,7 +43,7 @@ function App() {
   const vaciarCarrito = () => setCarrito([]);
 
   /* =========================
-     CARGAR TASA DESDE URL O LOCALSTORAGE
+     CARGAR TASA
   ========================= */
   useEffect(() => {
     try {
@@ -195,9 +196,13 @@ function App() {
           🗑️
         </button>
 
-        <p className="text-lg">
+        {/* BOTÓN DEL CARRITO */}
+        <button
+          onClick={() => setMostrarCarrito(!mostrarCarrito)}
+          className="relative text-lg"
+        >
           🛒 <strong>{totalItemsCount}</strong>
-        </p>
+        </button>
 
         <button
           onClick={comprarPorWhatsApp}
@@ -213,6 +218,56 @@ function App() {
           </svg>
         </button>
       </div>
+
+      {/* MINI CARRITO */}
+      {mostrarCarrito && (
+        <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-4 mb-4 border border-gray-200">
+          <h3 className="text-lg font-semibold mb-2">Carrito</h3>
+
+          {carrito.length === 0 ? (
+            <p className="text-sm text-gray-500">Tu carrito está vacío.</p>
+          ) : (
+            <div className="space-y-2">
+              {carrito.map((item) => (
+                <div key={item.id} className="flex justify-between text-sm">
+                  <span>{item.name} x{item.qty}</span>
+                  <span className="font-semibold">
+                    {roundTo50(item.priceUSD * appliedRate)} Bs
+                  </span>
+                </div>
+              ))}
+
+              <hr className="my-2" />
+
+              <p className="text-right font-bold text-green-700">
+                Total:{" "}
+                {carrito.reduce(
+                  (sum, it) =>
+                    sum + roundTo50(it.priceUSD * appliedRate) * it.qty,
+                  0
+                )}{" "}
+                Bs
+              </p>
+
+              <div className="flex justify-between mt-3">
+                <button
+                  onClick={vaciarCarrito}
+                  className="px-3 py-1 bg-red-500 text-white rounded-full text-sm"
+                >
+                  Vaciar
+                </button>
+
+                <button
+                  onClick={comprarPorWhatsApp}
+                  className="px-3 py-1 bg-green-500 text-white rounded-full text-sm"
+                >
+                  WhatsApp
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* CATEGORÍAS */}
       {enHome && (
