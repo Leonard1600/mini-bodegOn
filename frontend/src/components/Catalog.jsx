@@ -33,7 +33,7 @@ function Catalog({ category, appliedRate, addToCart, onBack }) {
           return (
             <div
               key={product.id}
-              className="border rounded-xl p-3 flex flex-col items-center shadow-sm bg-gray-50 hover:shadow-md transition"
+              className="border rounded-xl p-2 flex flex-col items-center shadow-sm bg-gray-50 hover:shadow-md transition"
             >
               {/* IMAGEN DEL PRODUCTO */}
               <img
@@ -47,17 +47,17 @@ function Catalog({ category, appliedRate, addToCart, onBack }) {
               />
 
               {/* NOMBRE */}
-              <h3 className="text-sm font-semibold text-center leading-tight">
+              <h3 className="text-sm font-semibold text-center leading-snug">
                 {product.name}
               </h3>
 
               {/* PRECIO USD */}
-              <p className="text-xs text-gray-600 mt-1">
+              <p className="text-xs text-gray-600">
                 ${product.priceUSD.toFixed(2)}
               </p>
 
               {/* PRECIO BS */}
-              <p className="text-lg font-bold text-green-700 mt-1">
+              <p className="text-lg font-bold text-green-700 mt-0.5">
                 {priceBs} Bs
               </p>
 
