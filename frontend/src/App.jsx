@@ -188,9 +188,7 @@ function App() {
           className="flex-1 max-w-[180px] border border-amber-300 rounded-full px-3 py-2 text-sm"
         />
 
-      
-
-         {/* BOTÓN DEL CARRITO */}
+        {/* BOTÓN DEL CARRITO */}
         <button
           onClick={() => setMostrarCarrito(!mostrarCarrito)}
           className="relative text-lg"
@@ -213,9 +211,17 @@ function App() {
         </button>
       </div>
 
+      {/* OVERLAY PARA CERRAR CARRITO */}
+      {mostrarCarrito && (
+        <div
+          className="fixed inset-0 bg-black/20 z-10"
+          onClick={() => setMostrarCarrito(false)}
+        ></div>
+      )}
+
       {/* MINI CARRITO */}
       {mostrarCarrito && (
-        <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-4 mb-4 border border-gray-200">
+        <div className="relative z-20 max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-4 mb-4 border border-gray-200">
           <h3 className="text-lg font-semibold mb-2">Carrito</h3>
 
           {carrito.length === 0 ? (
