@@ -188,15 +188,9 @@ function App() {
           className="flex-1 max-w-[180px] border border-amber-300 rounded-full px-3 py-2 text-sm"
         />
 
-        <button
-          onClick={vaciarCarrito}
-          className="w-8 h-8 flex items-center justify-center bg-red-100 text-red-600 rounded-full border border-red-300"
-          title="Vaciar carrito"
-        >
-          🗑️
-        </button>
+      
 
-        {/* BOTÓN DEL CARRITO */}
+         {/* BOTÓN DEL CARRITO */}
         <button
           onClick={() => setMostrarCarrito(!mostrarCarrito)}
           className="relative text-lg"
