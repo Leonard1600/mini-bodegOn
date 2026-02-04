@@ -39,7 +39,7 @@ function Catalog({ category, appliedRate, addToCart, onBack }) {
               <img
                 src={imageSrc}
                 alt={product.name}
-                className="w-full h-40 object-cover rounded-md mb-2"
+                className="w-full h-44 object-cover rounded-md mb-1"
                 loading="lazy"
                 onError={(e) => {
                   e.target.src = "/images/no-image.png";
