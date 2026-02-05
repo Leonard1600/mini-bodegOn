@@ -43,30 +43,26 @@ function App() {
   const vaciarCarrito = () => setCarrito([]);
 
   /* =========================
-     CARGAR TASA
+     CARGAR TASA GLOBAL
   ========================= */
   useEffect(() => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const urlRate = params.get("rate");
+    const loadRate = async () => {
+      try {
+        const res = await fetch("/rate.json", { cache: "no-store" });
+        const data = await res.json();
 
-      if (urlRate && !isNaN(urlRate)) {
-        const parsed = Number(urlRate);
-        setAppliedRate(parsed);
-        localStorage.setItem("bodegonRate", parsed);
-        return;
-      }
-
-      const savedRate = localStorage.getItem("bodegonRate");
-      if (savedRate) {
-        setAppliedRate(Number(savedRate));
-      } else {
+        if (typeof data.rate === "number") {
+          setAppliedRate(data.rate);
+        } else {
+          throw new Error("rate inválida en rate.json");
+        }
+      } catch (err) {
+        console.error("Error cargando tasa global", err);
         setAppliedRate(40);
       }
-    } catch (err) {
-      console.error("Error cargando tasa", err);
-      setAppliedRate(40);
-    }
+    };
+
+    loadRate();
   }, []);
 
   /* =========================
@@ -188,7 +184,6 @@ function App() {
           className="flex-1 max-w-[180px] border border-amber-300 rounded-full px-3 py-2 text-sm"
         />
 
-        {/* BOTÓN DEL CARRITO */}
         <button
           onClick={() => setMostrarCarrito(!mostrarCarrito)}
           className="relative text-lg"
@@ -196,7 +191,6 @@ function App() {
           🛒 <strong>{totalItemsCount}</strong>
         </button>
 
-        {/* BOTÓN WHATSAPP MEJORADO */}
         <button
           onClick={comprarPorWhatsApp}
           className="w-10 h-10 flex items-center justify-center 
@@ -215,62 +209,60 @@ function App() {
         </button>
       </div>
 
-      {/* OVERLAY PARA CERRAR CARRITO */}
-      {mostrarCarrito && (
-        <div
-          className="fixed inset-0 bg-black/20 z-10"
-          onClick={() => setMostrarCarrito(false)}
-        ></div>
-      )}
-
       {/* MINI CARRITO */}
       {mostrarCarrito && (
-        <div className="relative z-20 max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-4 mb-4 border border-gray-200">
-          <h3 className="text-lg font-semibold mb-2">Carrito</h3>
+        <>
+          <div
+            className="fixed inset-0 bg-black/20 z-10"
+            onClick={() => setMostrarCarrito(false)}
+          ></div>
 
-          {carrito.length === 0 ? (
-            <p className="text-sm text-gray-500">Tu carrito está vacío.</p>
-          ) : (
-            <div className="space-y-2">
-              {carrito.map((item) => (
-                <div key={item.id} className="flex justify-between text-sm">
-                  <span>{item.name} x{item.qty}</span>
-                  <span className="font-semibold">
-                    {roundTo50(item.priceUSD * appliedRate)} Bs
-                  </span>
+          <div className="relative z-20 max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-4 mb-4 border border-gray-200">
+            <h3 className="text-lg font-semibold mb-2">Carrito</h3>
+
+            {carrito.length === 0 ? (
+              <p className="text-sm text-gray-500">Tu carrito está vacío.</p>
+            ) : (
+              <div className="space-y-2">
+                {carrito.map((item) => (
+                  <div key={item.id} className="flex justify-between text-sm">
+                    <span>{item.name} x{item.qty}</span>
+                    <span className="font-semibold">
+                      {roundTo50(item.priceUSD * appliedRate)} Bs
+                    </span>
+                  </div>
+                ))}
+
+                <hr className="my-2" />
+
+                <p className="text-right font-bold text-green-700">
+                  Total:{" "}
+                  {carrito.reduce(
+                    (sum, it) =>
+                      sum + roundTo50(it.priceUSD * appliedRate) * it.qty,
+                    0
+                  )} Bs
+                </p>
+
+                <div className="flex justify-between mt-3">
+                  <button
+                    onClick={vaciarCarrito}
+                    className="px-3 py-1 bg-red-500 text-white rounded-full text-sm"
+                  >
+                    Vaciar
+                  </button>
+
+                  <button
+                    onClick={comprarPorWhatsApp}
+                    className="px-3 py-1 bg-green-500 text-white rounded-full text-sm"
+                  >
+                    WhatsApp
+                  </button>
                 </div>
-              ))}
-
-              <hr className="my-2" />
-
-              <p className="text-right font-bold text-green-700">
-                Total:{" "}
-                {carrito.reduce(
-                  (sum, it) =>
-                    sum + roundTo50(it.priceUSD * appliedRate) * it.qty,
-                  0
-                )}{" "}
-                Bs
-              </p>
-
-              <div className="flex justify-between mt-3">
-                <button
-                  onClick={vaciarCarrito}
-                  className="px-3 py-1 bg-red-500 text-white rounded-full text-sm"
-                >
-                  Vaciar
-                </button>
-
-                <button
-                  onClick={comprarPorWhatsApp}
-                  className="px-3 py-1 bg-green-500 text-white rounded-full text-sm"
-                >
-                  WhatsApp
-                </button>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        </>
       )}
 
       {/* CATEGORÍAS */}
@@ -306,57 +298,34 @@ function App() {
         />
       )}
 
-      {/* PAGO MÓVIL */}
+      {/* PAGO MÓVIL (RESTAURADO) */}
       <div className="max-w-md mx-auto mt-10 mb-6">
         <div className="bg-blue-50 border border-blue-200 rounded-2xl shadow-md p-6 text-center">
           <h3 className="text-lg font-semibold text-blue-700 mb-3">
             Pago Móvil
           </h3>
-          <p className="text-sm text-blue-800 font-medium"><strong>C.I:</strong> 21.124.901</p>
-          <p className="text-sm text-blue-800 font-medium"><strong>Teléfono:</strong> 0412-7232455</p>
-          <p className="text-sm text-blue-800 font-medium"><strong>Banco:</strong> 0102 — Banco de Venezuela</p>
-
-          {/* HORARIO CORREGIDO */}
+          <p className="text-sm text-blue-800 font-medium">
+            <strong>C.I:</strong> 21.124.901
+          </p>
+          <p className="text-sm text-blue-800 font-medium">
+            <strong>Teléfono:</strong> 0412-7232455
+          </p>
+          <p className="text-sm text-blue-800 font-medium">
+            <strong>Banco:</strong> 0102 — Banco de Venezuela
+          </p>
           <p className="text-sm text-blue-800 font-medium mt-2">
             <strong>Horario:</strong> 7:00 AM — 10:00 PM
           </p>
         </div>
       </div>
 
-      {/* BOTÓN FLOTANTE DE WHATSAPP */}
-      <button
-        onClick={comprarPorWhatsApp}
-        className="
-          fixed bottom-6 right-6 z-50
-          w-14 h-14 rounded-full
-          bg-green-500 hover:bg-green-600
-          shadow-xl text-white
-          flex items-center justify-center
-          transition-all active:scale-95
-        "
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 32 32"
-          fill="currentColor"
-          className="w-7 h-7"
-        >
-          <path d="M16 2C8.3 2 2 8.1 2 15.6c0 2.7.8 5.3 2.4 7.5L2 30l7-2.3c2.1 1.1 4.5 1.7 7 1.7 7.7 0 14-6.1 14-13.8S23.7 2 16 2z"/>
-        </svg>
-      </button>
-
       {/* CONTROL DE ACCESO */}
       <div className="mt-6 mb-10">
-        <ClientAccess
-          rate={appliedRate}
-          onRateUpdated={(newRate) => {
-            setAppliedRate(newRate);
-            localStorage.setItem("bodegonRate", newRate);
-          }}
-        />
+        <ClientAccess rate={appliedRate} />
       </div>
     </div>
   );
 }
 
 export default App;
+
