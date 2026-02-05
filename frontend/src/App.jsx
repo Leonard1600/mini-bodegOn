@@ -3,6 +3,9 @@ import Catalog from "./components/Catalog";
 import ClientAccess from "./components/ClientAccess";
 import { catalogByCategory } from "./data/catalog";
 
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "./firebase";
+
 function App() {
   const [categoriaActiva, setCategoriaActiva] = useState(null);
   const [busqueda, setBusqueda] = useState("");
@@ -43,26 +46,18 @@ function App() {
   const vaciarCarrito = () => setCarrito([]);
 
   /* =========================
-     CARGAR TASA GLOBAL
+     CARGAR TASA GLOBAL DESDE FIRESTORE
   ========================= */
   useEffect(() => {
-    const loadRate = async () => {
-      try {
-        const res = await fetch("/rate.json", { cache: "no-store" });
-        const data = await res.json();
+    const ref = doc(db, "config", "tasa");
 
-        if (typeof data.rate === "number") {
-          setAppliedRate(data.rate);
-        } else {
-          throw new Error("rate inválida en rate.json");
-        }
-      } catch (err) {
-        console.error("Error cargando tasa global", err);
-        setAppliedRate(40);
+    const unsub = onSnapshot(ref, (snap) => {
+      if (snap.exists()) {
+        setAppliedRate(snap.data().valor);
       }
-    };
+    });
 
-    loadRate();
+    return () => unsub();
   }, []);
 
   /* =========================
@@ -298,7 +293,7 @@ function App() {
         />
       )}
 
-      {/* PAGO MÓVIL (RESTAURADO) */}
+      {/* PAGO MÓVIL */}
       <div className="max-w-md mx-auto mt-10 mb-6">
         <div className="bg-blue-50 border border-blue-200 rounded-2xl shadow-md p-6 text-center">
           <h3 className="text-lg font-semibold text-blue-700 mb-3">
@@ -328,4 +323,3 @@ function App() {
 }
 
 export default App;
-
