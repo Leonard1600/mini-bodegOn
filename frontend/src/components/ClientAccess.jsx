@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
-function ClientAccess({ rate, onRateUpdated }) {
+function ClientAccess({ rate }) {
   const [password, setPassword] = useState("");
   const [authorized, setAuthorized] = useState(false);
   const [newRate, setNewRate] = useState(rate);
 
-  // 🔐 CONTRASEÑA
+  // 🔐 CONTRASEÑA DEL PANEL
   const correctPassword = "Angelina.1600";
 
   // Mantener sincronizado el input cuando cambia la tasa desde afuera
@@ -21,14 +23,25 @@ function ClientAccess({ rate, onRateUpdated }) {
     }
   };
 
-  const updateRate = () => {
+  const updateRate = async () => {
     if (!newRate || isNaN(newRate)) return;
 
-    onRateUpdated(Number(newRate));
+    try {
+      await setDoc(doc(db, "config", "tasa"), {
+        valor: Number(newRate),
+        secret: correctPassword
+      });
 
-    // Cerrar panel y limpiar
-    setAuthorized(false);
-    setPassword("");
+      alert("Tasa actualizada correctamente");
+
+      // Cerrar panel y limpiar
+      setAuthorized(false);
+      setPassword("");
+
+    } catch (err) {
+      console.error("Error actualizando tasa:", err);
+      alert("Error actualizando la tasa");
+    }
   };
 
   return (
