@@ -76,12 +76,12 @@ export const catalogByCategory = [
     products: tabaco,
   },
 
-  // Última categoría
+  // Última categoría — CORREGIDA
   {
-    id: "repuestos-moto",
+    id: "motos", // ← IMPORTANTE: debe coincidir con App.jsx
     name: "Repuestos de moto",
     image: "/repuestos de moto.png",
-    products: [],
+    products: [], // Por ahora vacío hasta que el cliente envíe los precios
   },
 ];
 

@@ -1,12 +1,7 @@
 import React from "react";
 import { getImagePath } from "../utils/getImagePath";
 
-function Catalog({ category, appliedRate, addToCart, onBack }) {
-  // ====== REDONDEO ======
-  const roundTo50 = (value) => {
-    if (!value || isNaN(value)) return 0;
-    return Math.ceil(value / 50) * 50;
-  };
+function Catalog({ category, appliedRate, addToCart, onBack, getPriceBs }) {
 
   return (
     <div className="max-w-4xl mx-auto bg-white p-4 rounded-xl shadow">
@@ -24,9 +19,9 @@ function Catalog({ category, appliedRate, addToCart, onBack }) {
       {/* GRID DE PRODUCTOS */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {category.products.map((product) => {
-          const priceBs = appliedRate
-            ? roundTo50(product.priceUSD * appliedRate)
-            : "Cargando...";
+
+          // Precio en Bs usando la tasa correcta (global o motos)
+          const priceBs = getPriceBs(product);
 
           const imageSrc = getImagePath(category.id, product.slug);
 

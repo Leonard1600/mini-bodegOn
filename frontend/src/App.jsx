@@ -11,11 +11,24 @@ function App() {
   const [busqueda, setBusqueda] = useState("");
   const [carrito, setCarrito] = useState([]);
   const [appliedRate, setAppliedRate] = useState(null);
+  const [motoRate, setMotoRate] = useState(null); // Tasa especial motos
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
 
   const roundTo50 = (value) => {
     if (!value || isNaN(value)) return 0;
     return Math.ceil(value / 50) * 50;
+  };
+
+  // Decide qué tasa usar según el producto
+  const getPriceBs = (product) => {
+    if (!product) return 0;
+
+    const isMoto = product.categoryId === "motos";
+    const rate = isMoto ? motoRate : appliedRate;
+
+    if (!rate) return 0;
+
+    return roundTo50(product.priceUSD * rate);
   };
 
   /* =========================
@@ -61,6 +74,21 @@ function App() {
   }, []);
 
   /* =========================
+     CARGAR TASA MOTOS DESDE FIRESTORE
+  ========================= */
+  useEffect(() => {
+    const ref = doc(db, "config", "tasa_motos");
+
+    const unsub = onSnapshot(ref, (snap) => {
+      if (snap.exists()) {
+        setMotoRate(snap.data().valor);
+      }
+    });
+
+    return () => unsub();
+  }, []);
+
+  /* =========================
      AGREGAR AL CARRITO
   ========================= */
   const addToCart = (product, qty = 1) => {
@@ -81,6 +109,7 @@ function App() {
           name: product.name,
           priceUSD: product.priceUSD,
           qty,
+          categoryId: product.categoryId || null,
         },
       ];
     });
@@ -92,15 +121,14 @@ function App() {
   const comprarPorWhatsApp = () => {
     let mensaje = "Hola, quisiera hacer un pedido en Mini bodegOn:";
 
-    if (carrito.length > 0 && appliedRate) {
+    if (carrito.length > 0 && (appliedRate || motoRate)) {
       carrito.forEach((it) => {
-        const priceBs = roundTo50(it.priceUSD * appliedRate);
+        const priceBs = getPriceBs(it);
         mensaje += `\n- ${it.name} x${it.qty}: ${priceBs} Bs`;
       });
 
       const total = carrito.reduce(
-        (sum, it) =>
-          sum + roundTo50(it.priceUSD * appliedRate) * it.qty,
+        (sum, it) => sum + getPriceBs(it) * it.qty,
         0
       );
 
@@ -199,7 +227,7 @@ function App() {
             fill="currentColor"
             className="w-5 h-5"
           >
-            <path d="M16 2C8.3 2 2 8.1 2 15.6c0 2.7.8 5.3 2.4 7.5L2 30l7-2.3c2.1 1.1 4.5 1.7 7 1.7 7.7 0 14-6.1 14-13.8S23.7 2 16 2z"/>
+            <path d="M16 2C8.3 2 2 8.1 2 15.6c0 2.7.8 5.3 2.4 7.5L2 30l7-2.3c2.1 1.1 4.5 1.7 7 1.7 7.7 0 14-6.1 14-13.8S23.7 2 16 2z" />
           </svg>
         </button>
       </div>
@@ -223,7 +251,7 @@ function App() {
                   <div key={item.id} className="flex justify-between text-sm">
                     <span>{item.name} x{item.qty}</span>
                     <span className="font-semibold">
-                      {roundTo50(item.priceUSD * appliedRate)} Bs
+                      {getPriceBs(item)} Bs
                     </span>
                   </div>
                 ))}
@@ -233,8 +261,7 @@ function App() {
                 <p className="text-right font-bold text-green-700">
                   Total:{" "}
                   {carrito.reduce(
-                    (sum, it) =>
-                      sum + roundTo50(it.priceUSD * appliedRate) * it.qty,
+                    (sum, it) => sum + getPriceBs(it) * it.qty,
                     0
                   )} Bs
                 </p>
@@ -290,6 +317,7 @@ function App() {
           appliedRate={appliedRate}
           addToCart={addToCart}
           onBack={() => setCategoriaActiva(null)}
+          getPriceBs={getPriceBs}  
         />
       )}
 

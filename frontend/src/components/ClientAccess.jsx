@@ -1,19 +1,39 @@
 import React, { useState, useEffect } from "react";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase";
 
 function ClientAccess({ rate }) {
   const [password, setPassword] = useState("");
   const [authorized, setAuthorized] = useState(false);
+
+  // Tasa global
   const [newRate, setNewRate] = useState(rate);
+
+  // Tasa motos
+  const [motoRate, setMotoRate] = useState(null);
+  const [newMotoRate, setNewMotoRate] = useState("");
 
   // 🔐 CONTRASEÑA DEL PANEL
   const correctPassword = "Angelina.1600";
 
-  // Mantener sincronizado el input cuando cambia la tasa desde afuera
+  // Mantener sincronizado el input cuando cambia la tasa global
   useEffect(() => {
     setNewRate(rate);
   }, [rate]);
+
+  // Cargar tasa de motos desde Firestore
+  useEffect(() => {
+    const ref = doc(db, "config", "tasa_motos");
+
+    const unsub = onSnapshot(ref, (snap) => {
+      if (snap.exists()) {
+        setMotoRate(snap.data().valor);
+        setNewMotoRate(snap.data().valor);
+      }
+    });
+
+    return () => unsub();
+  }, []);
 
   const handleAccess = () => {
     if (password === correctPassword) {
@@ -29,18 +49,35 @@ function ClientAccess({ rate }) {
     try {
       await setDoc(doc(db, "config", "tasa"), {
         valor: Number(newRate),
-        secret: correctPassword
+        secret: correctPassword,
       });
 
-      alert("Tasa actualizada correctamente");
+      alert("Tasa global actualizada correctamente");
 
-      // Cerrar panel y limpiar
       setAuthorized(false);
       setPassword("");
-
     } catch (err) {
       console.error("Error actualizando tasa:", err);
       alert("Error actualizando la tasa");
+    }
+  };
+
+  const updateMotoRate = async () => {
+    if (!newMotoRate || isNaN(newMotoRate)) return;
+
+    try {
+      await setDoc(doc(db, "config", "tasa_motos"), {
+        valor: Number(newMotoRate),
+        secret: correctPassword,
+      });
+
+      alert("Tasa de motos actualizada correctamente");
+
+      setAuthorized(false);
+      setPassword("");
+    } catch (err) {
+      console.error("Error actualizando tasa motos:", err);
+      alert("Error actualizando la tasa de motos");
     }
   };
 
@@ -72,21 +109,47 @@ function ClientAccess({ rate }) {
 
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-3 animate-fadeIn">
+          <div className="flex flex-col items-center gap-4 animate-fadeIn">
 
-            <input
-              type="number"
-              value={newRate}
-              onChange={(e) => setNewRate(e.target.value)}
-              className="w-full border border-green-300 px-4 py-2 rounded-full focus:ring-2 focus:ring-green-400 outline-none"
-            />
+            {/* TASA GLOBAL */}
+            <div className="w-full">
+              <label className="text-sm font-semibold text-green-700">
+                Tasa Global (Alimentos)
+              </label>
+              <input
+                type="number"
+                value={newRate}
+                onChange={(e) => setNewRate(e.target.value)}
+                className="w-full border border-green-300 px-4 py-2 rounded-full focus:ring-2 focus:ring-green-400 outline-none mt-1"
+              />
 
-            <button
-              onClick={updateRate}
-              className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-full transition"
-            >
-              Actualizar tasa
-            </button>
+              <button
+                onClick={updateRate}
+                className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-full transition mt-2"
+              >
+                Actualizar tasa global
+              </button>
+            </div>
+
+            {/* TASA MOTOS */}
+            <div className="w-full">
+              <label className="text-sm font-semibold text-blue-700">
+                Tasa Repuestos de Moto
+              </label>
+              <input
+                type="number"
+                value={newMotoRate}
+                onChange={(e) => setNewMotoRate(e.target.value)}
+                className="w-full border border-blue-300 px-4 py-2 rounded-full focus:ring-2 focus:ring-blue-400 outline-none mt-1"
+              />
+
+              <button
+                onClick={updateMotoRate}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-full transition mt-2"
+              >
+                Actualizar tasa motos
+              </button>
+            </div>
 
           </div>
         )}
