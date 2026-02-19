@@ -46,6 +46,16 @@ const confiteria = [
   { id: "conf-045", name: "Galleta TipTop", priceUSD: 1.30, slug: "galleta_tiptop" },
   { id: "conf-046", name: "Palitos 30gr", priceUSD: 0.63, slug: "palitos_30gr" },
   { id: "conf-047", name: "Cocosette 50gr", priceUSD: 1.26, slug: "cocosette_50gr" },
+
+  /* ============================
+     NUEVOS PRODUCTOS AGREGADOS
+     ============================ */
+
+  { id: "conf-048", name: "Bianchi chocolate", priceUSD: 0.42, slug: "bianchi_chocolate" },
+  { id: "conf-049", name: "Dandy 19gr", priceUSD: 0.43, slug: "dandy_19gr" },
+  { id: "conf-050", name: "Chesitos 15gr", priceUSD: 0.26, slug: "chesitos_15gr" },
+  { id: "conf-051", name: "Golpe con todo ranchero 30gr", priceUSD: 0.72, slug: "golpe_con_todo_ranchero_30gr" },
+  { id: "conf-052", name: "De Todito 40gr", priceUSD: 1.29, slug: "de_todito_40gr" },
 ];
 
 export default confiteria;
