@@ -46,15 +46,27 @@ function Catalog({ category, appliedRate, addToCart, onBack, getPriceBs }) {
                 {product.name}
               </h3>
 
-              {/* PRECIO USD */}
-              <p className="text-xs text-gray-600">
-                ${product.priceUSD.toFixed(2)}
-              </p>
+              {/* ============================
+                  PRECIO (CONDICIÓN ESPECIAL)
+                 ============================ */}
 
-              {/* PRECIO BS */}
-              <p className="text-lg font-bold text-green-700 mt-0.5">
-                {priceBs} Bs
-              </p>
+              {product.categoryId === "motos" ? (
+                // SOLO MOTOS → SOLO PRECIO EN BS
+                <p className="text-lg font-bold text-green-700 mt-0.5">
+                  {priceBs} Bs
+                </p>
+              ) : (
+                // TODAS LAS DEMÁS CATEGORÍAS → USD + BS
+                <>
+                  <p className="text-xs text-gray-600">
+                    ${product.priceUSD.toFixed(2)}
+                  </p>
+
+                  <p className="text-lg font-bold text-green-700 mt-0.5">
+                    {priceBs} Bs
+                  </p>
+                </>
+              )}
 
               {/* BOTÓN AGREGAR */}
               <button

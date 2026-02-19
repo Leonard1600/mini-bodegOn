@@ -163,7 +163,11 @@ function App() {
         ...cat,
         products: cat.products.filter((p) =>
           p.name.toLowerCase().includes(search)
-        ),
+        ).map((p) => ({
+          ...p,
+          categoryId: cat.id,
+          categoryName: cat.name,
+        })),
       });
     }
   }, [busqueda]);
@@ -300,7 +304,16 @@ function App() {
             >
               <h2 className="text-2xl font-bold">{cat.name}</h2>
               <button
-                onClick={() => setCategoriaActiva(cat)}
+                onClick={() =>
+                  setCategoriaActiva({
+                    ...cat,
+                    products: cat.products.map((p) => ({
+                      ...p,
+                      categoryId: cat.id,
+                      categoryName: cat.name,
+                    })),
+                  })
+                }
                 className="mt-3 bg-white text-black px-4 py-2 rounded-full"
               >
                 Ver productos
@@ -317,7 +330,7 @@ function App() {
           appliedRate={appliedRate}
           addToCart={addToCart}
           onBack={() => setCategoriaActiva(null)}
-          getPriceBs={getPriceBs}  
+          getPriceBs={getPriceBs}
         />
       )}
 
