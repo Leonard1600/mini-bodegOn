@@ -11,6 +11,9 @@ import papeleria from "./categories/papeleria.js";
 import confiteria from "./categories/confiteria.js";
 import helados from "./categories/helados.js";
 
+// 🔥 IMPORTANTE: agregar esta línea
+import motos from "./categories/motos.js";
+
 export const catalogByCategory = [
   {
     id: "viveres",
@@ -81,7 +84,7 @@ export const catalogByCategory = [
     id: "motos", // ← IMPORTANTE: debe coincidir con App.jsx
     name: "Repuestos de moto",
     image: "/repuestos de moto.png",
-    products: [], // Por ahora vacío hasta que el cliente envíe los precios
+    products: motos, // ← YA NO ESTÁ VACÍO
   },
 ];
 
