@@ -43,12 +43,15 @@ const confiteria = [
   { id: "conf-042", name: "Belvita Kraker paquete", priceUSD: 3.78, slug: "belvita_kraker_paquete" },
   { id: "conf-043", name: "Oreo 32gr", priceUSD: 0.56, slug: "oreo_32gr" },
   { id: "conf-044", name: "Galleta de Soda paquete", priceUSD: 2.13, slug: "galleta_de_soda_paquete" },
-  { id: "conf-045", name: "Galleta TipTop", priceUSD: 1.30, slug: "galleta_tiptop" },
+
+  // ✔ Precio actualizado: 1.07$
+  { id: "conf-045", name: "Galleta TipTop paquete", priceUSD: 1.07, slug: "galleta_tiptop_paquete" },
+
   { id: "conf-046", name: "Palitos 30gr", priceUSD: 0.63, slug: "palitos_30gr" },
   { id: "conf-047", name: "Cocosette 50gr", priceUSD: 1.26, slug: "cocosette_50gr" },
 
   /* ============================
-     NUEVOS PRODUCTOS AGREGADOS
+     NUEVOS PRODUCTOS Y PRECIOS
      ============================ */
 
   { id: "conf-048", name: "Bianchi chocolate", priceUSD: 0.42, slug: "bianchi_chocolate" },
@@ -56,6 +59,33 @@ const confiteria = [
   { id: "conf-050", name: "Chesitos 15gr", priceUSD: 0.26, slug: "chesitos_15gr" },
   { id: "conf-051", name: "Golpe con todo ranchero 30gr", priceUSD: 0.72, slug: "golpe_con_todo_ranchero_30gr" },
   { id: "conf-052", name: "De Todito 40gr", priceUSD: 1.29, slug: "de_todito_40gr" },
+
+  // ✔ Nuevo: Galleta Takita 1.21$
+  { id: "conf-053", name: "Galleta Takita paquete", priceUSD: 1.21, slug: "galleta_takita_paquete" },
+
+  // ✔ Nuevo: Tostones Tom 28gr 0.62$
+  { id: "conf-054", name: "Tostones Tom 28gr", priceUSD: 0.62, slug: "tostones_tom_28gr" },
+
+  // ✔ Nuevo: Samba 32gr 1.12$
+  { id: "conf-055", name: "Samba 32gr", priceUSD: 1.12, slug: "samba_32gr" },
+
+  // ✔ Nuevo: Flaquito 30gr 0.75$
+  { id: "conf-056", name: "Flaquito 30gr", priceUSD: 0.75, slug: "flaquito_30gr" },
+
+  // ✔ Nuevo: Chocolate Savoy 130gr 5.34$
+  { id: "conf-057", name: "Chocolate Savoy 130gr", priceUSD: 5.34, slug: "chocolate_savoy_130gr" },
+
+  // ✔ Nuevo: Chocolate Savoy 30gr 1.61$
+  { id: "conf-058", name: "Chocolate Savoy 30gr", priceUSD: 1.61, slug: "chocolate_savoy_30gr" },
+
+  // ✔ Nuevo: Choco Mio 0.40$
+  { id: "conf-059", name: "Choco Mio", priceUSD: 0.40, slug: "choco_mio" },
+
+  // ✔ Nuevo: Nucita doble sabor 20gr 0.60$
+  { id: "conf-060", name: "Nucita doble sabor 20gr", priceUSD: 0.60, slug: "nucita_doble_sabor_20gr" },
+
+  // ✔ Nuevo: Nucita tubito 1.29$
+  { id: "conf-061", name: "Nucita tubito", priceUSD: 1.29, slug: "nucita_tubito" }
 ];
 
 export default confiteria;

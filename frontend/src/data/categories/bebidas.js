@@ -6,7 +6,10 @@ const bebidas = [
   { id: "beb-004", name: "Leche Líquida Carabobo", priceUSD: 3.50, slug: "leche_liquida_carabobo" },
 
   { id: "beb-005", name: "Jugo Justy 1.5L", priceUSD: 1.26, slug: "jugo_justy_1_5l" },
+
+  // ✔ Precio confirmado: 2.50$
   { id: "beb-006", name: "Malta 1.5L", priceUSD: 2.50, slug: "malta_1_5l" },
+
   { id: "beb-007", name: "Jugo Del Valle 1.5L", priceUSD: 1.34, slug: "jugo_del_valle_1_5l" },
   { id: "beb-008", name: "Jugo Huesito 200ml", priceUSD: 1.44, slug: "jugo_huesito_200ml" },
 
@@ -14,6 +17,7 @@ const bebidas = [
   { id: "beb-010", name: "Sun Cola 1L", priceUSD: 0.80, slug: "sun_cola_1l" },
   { id: "beb-011", name: "Sun Cola 2L", priceUSD: 1.14, slug: "sun_cola_2l" },
 
+  // ✔ Precio confirmado: 0.98$
   { id: "beb-012", name: "Malta 250ml", priceUSD: 0.98, slug: "malta_250ml" },
 
   { id: "beb-013", name: "Gatorade 500ml", priceUSD: 2.15, slug: "gatorade_500ml" },
@@ -21,6 +25,8 @@ const bebidas = [
   { id: "beb-014", name: "Jugo Del Valle 500ml", priceUSD: 0.76, slug: "jugo_del_valle_500ml" },
 
   { id: "beb-015", name: "Jugo Natulac 1L", priceUSD: 3.03, slug: "jugo_natulac_1l" },
+
+  // ✔ Precio confirmado: 1.27$
   { id: "beb-016", name: "Jugo Natulac 250ml", priceUSD: 1.27, slug: "jugo_natulac_250ml" },
 
   { id: "beb-017", name: "Jugo Frutys Sabores 1.5L", priceUSD: 1.26, slug: "jugo_frutys_sabores_1_5l" },

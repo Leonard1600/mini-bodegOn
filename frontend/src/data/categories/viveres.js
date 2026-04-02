@@ -26,7 +26,7 @@ const viveres = [
   { id: "viv-020", name: "Arroz Kaly Tradicional 900gr", priceUSD: 1.71, slug: "arroz_kaly_tradicional_900gr" },
   { id: "viv-021", name: "Arroz Kaly Premium 900gr", priceUSD: 2.23, slug: "arroz_kaly_premium_900gr" },
 
-  /* NUEVO PRODUCTO */
+  // ✔ Precio actualizado según tu lista
   { id: "viv-021b", name: "Arroz Mary Premium 900gr", priceUSD: 2.89, slug: "arroz_mary_premium_900gr" },
 
   { id: "viv-022", name: "Pasta Larga La Especial 1kg", priceUSD: 2.45, slug: "pasta_larga_la_especial_1kg" },
@@ -73,8 +73,11 @@ const viveres = [
 
   { id: "viv-053", name: "Vinagre Tiquire Flores 500ml", priceUSD: 1.56, slug: "vinagre_tiquire_flores_500ml" },
 
-  /* NUEVO PRODUCTO */
+  // ✔ Nuevo y con precio actualizado
   { id: "viv-053b", name: "Vinagre ADD 500ml", priceUSD: 2.05, slug: "vinagre_add_500ml" },
+
+  // ✔ Nuevo producto solicitado
+  { id: "viv-053c", name: "Vinagre Heinz 500ml", priceUSD: 1.53, slug: "vinagre_heinz_500ml" },
 
   { id: "viv-054", name: "Pasta de Tomate Heinz 200gr", priceUSD: 3.02, slug: "pasta_de_tomate_heinz_200gr" },
 
@@ -85,7 +88,6 @@ const viveres = [
 
   { id: "viv-058", name: "Atun en Aceite Willinger 170gr", priceUSD: 2.08, slug: "atun_en_aceite_willinger_170gr" },
 
-  /* NUEVO PRODUCTO */
   { id: "viv-058b", name: "Atun en Aceite Bubba 170gr", priceUSD: 2.00, slug: "atun_en_aceite_bubba_170gr" },
 
   { id: "viv-059", name: "Pepitona Margarita 140gr", priceUSD: 2.26, slug: "pepitona_margarita_140gr" },
@@ -100,14 +102,20 @@ const viveres = [
   { id: "viv-065", name: "Leche La Campina 200gr", priceUSD: 4.45, slug: "leche_la_campina_200gr" },
   { id: "viv-066", name: "Leche La Campesina 400gr", priceUSD: 9.76, slug: "leche_la_campesina_400gr" },
 
-  /* NUEVOS PRODUCTOS */
   { id: "viv-066b", name: "Leche Dobom 400gr", priceUSD: 4.46, slug: "leche_dobom_400gr" },
-  { id: "viv-066c", name: "Leche Kaly 400gr", priceUSD: 5.59, slug: "leche_kaly_400gr" },
+
+  // ✔ Precio corregido según tu lista (5.72$)
+  { id: "viv-066c", name: "Leche Kaly 400gr", priceUSD: 5.72, slug: "leche_kaly_400gr" },
 
   { id: "viv-067", name: "Condimentos Varios sobre", priceUSD: 0.26, slug: "condimentos_varios_sobre" },
 
-  /* NUEVO PRODUCTO */
-  { id: "viv-067b", name: "Mostaza Sofia 250gr", priceUSD: 2.31, slug: "mostaza_sofia_250gr" }
+  { id: "viv-067b", name: "Mostaza Sofia 250gr", priceUSD: 2.31, slug: "mostaza_sofia_250gr" },
+
+  // ✔ Nuevo producto solicitado
+  { id: "viv-067c", name: "Nestum 3 cereales 225gr", priceUSD: 5.25, slug: "nestum_3_cereales_225gr" },
+
+  // ✔ Nuevo producto solicitado
+  { id: "viv-067d", name: "Maiz en lata Del Monte 220gr", priceUSD: 2.76, slug: "maiz_en_lata_del_monte_220gr" }
 ];
 
 export default viveres;
